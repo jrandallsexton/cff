@@ -12,15 +12,6 @@ namespace CFF
 
     }
 
-    public class ForecastItem
-    {
 
-    }
-
-    public enum ForecastType
-    {
-        Indefinite = 0,
-        Snapshot = 1
-    }
 
 }
