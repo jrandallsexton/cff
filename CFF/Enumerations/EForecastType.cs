@@ -1,7 +1,7 @@
 ﻿
-namespace CFF
+namespace CFF.Enumerations
 {
-    public enum ForecastType
+    public enum EForecastType
     {
         Indefinite = 0,
         Snapshot = 1

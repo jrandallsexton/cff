@@ -41,8 +41,13 @@
   <ItemGroup>
     <Compile Include="Classes\Forecast.cs" />
     <Compile Include="Classes\ForecastItem.cs" />
-    <Compile Include="Enumerations\ForecastType.cs" />
-    <Compile Include="Interfaces\IForecastable.cs" />
+    <Compile Include="Engines\RoughEngine.cs" />
+    <Compile Include="Enumerations\EForecastItemType.cs" />
+    <Compile Include="Enumerations\EForecastType.cs" />
+    <Compile Include="Enumerations\EFrequency.cs" />
+    <Compile Include="Interfaces\IForecast.cs" />
+    <Compile Include="Interfaces\IForecastItem.cs" />
+    <Compile Include="Interfaces\IForecastEngine.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
