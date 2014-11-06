@@ -12,6 +12,7 @@ namespace CFF
 
     public interface IForecastItem
     {
+        Guid Id { get; }
         string Name { get; set; }
         EForecastItemType Type { get; set; }
         EFrequency Frequency { get; set; }

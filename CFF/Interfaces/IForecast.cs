@@ -18,6 +18,8 @@ namespace CFF.Interfaces
         EForecastType Type { get; set; }
         DateTime Begin { get; set; }
         DateTime End { get; set; }
+        Decimal AmountBegin { get; set; }
+        IEnumerable<IForecastItem> Items { get; }
 
         void AddItem(IForecastItem item);
     }

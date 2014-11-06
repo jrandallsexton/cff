@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CFF.Forecast" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAACAAAAAgCAAAAAAAAAQAgBAAEAQAAQAAAAAAAAA=</HashCode>
+      <FileName>Classes\Forecast.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CFF.ForecastItem">
+    <Position X="2.25" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAICAAAAAAAAAAAAAAAAAASAAIAAEAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Classes\ForecastItem.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CFF.ForecastResult" BaseTypeListCollapsed="true">
+    <Position X="7.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAEAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\ForecastResult.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CFF.ForecastResultItem" BaseTypeListCollapsed="true">
+    <Position X="9.25" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classes\ForecastResultItem.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CFF.Engines.RoughEngine" BaseTypeListCollapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAQCAAAAAAAAAAAAA=</HashCode>
+      <FileName>Engines\RoughEngine.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="CFF.Engines.ForecastItemWorkspace">
+    <Position X="3.5" Y="6.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Engines\RoughEngine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="CFF.IForecastItem">
+    <Position X="2.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAICAAAAAAAAAAAAAAAAAASAAIAAEAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IForecastItem.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CFF.Interfaces.IForecast">
+    <Position X="0.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAACAAAAAgCAAAAAAAAAQAgAAAEAQAAQAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IForecast.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CFF.Interfaces.IForecastEngine">
+    <Position X="5.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IForecastEngine.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CFF.Interfaces.IForecastResult">
+    <Position X="7.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAEAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IForecastResult.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="CFF.Interfaces.IForecastResultItem">
+    <Position X="9.25" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IForecastResultItem.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="CFF.Enumerations.EForecastItemType">
+    <Position X="11.25" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Enumerations\EForecastItemType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CFF.Enumerations.EForecastType">
+    <Position X="11.25" Y="1.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Enumerations\EForecastType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CFF.Enumerations.EFrequency">
+    <Position X="11.25" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAIAAAAAAQAQAAAAAAAAEEAgAABAAAgA=</HashCode>
+      <FileName>Enumerations\EFrequency.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

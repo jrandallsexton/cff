@@ -13,6 +13,7 @@ namespace CFF
     public class ForecastItem : IForecastItem
     {
 
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public EForecastItemType Type { get; set; }
         public EFrequency Frequency { get; set; }
@@ -22,10 +23,10 @@ namespace CFF
 
         public ForecastItem()
         {
-
+            this.Id = Guid.NewGuid();
         }
 
-        public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, DateTime begin)
+        public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, DateTime begin) : this()
         {
             this.Name = name;
             this.Type = type;

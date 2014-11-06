@@ -22,6 +22,7 @@ namespace CFF
         public EForecastType Type { get; set; }
         public DateTime Begin { get; set; }
         public DateTime End { get; set; }
+        public Decimal AmountBegin { get; set; }
 
         public IEnumerable<IForecastItem> Items { get { return this._items; } }
 
@@ -31,10 +32,12 @@ namespace CFF
             this._items = new List<IForecastItem>();
         }
 
-        public Forecast(string name, EForecastType type) : this()
+        public Forecast(string name, EForecastType type, DateTime begin, int durationInDays) : this()
         {
             this.Name = name;
             this.Type = type;
+            this.Begin = begin;
+            if (this.Type == EForecastType.Snapshot) { this.End = this.Begin.AddDays(durationInDays); }
         }
 
         public void AddItem(IForecastItem item)
