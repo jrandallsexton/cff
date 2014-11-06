@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\Forecast.cs" />
+    <Compile Include="Classes\ForecastHelper.cs" />
     <Compile Include="Classes\ForecastItem.cs" />
     <Compile Include="Classes\ForecastResult.cs" />
     <Compile Include="Classes\ForecastResultItem.cs" />
@@ -48,6 +49,7 @@
     <Compile Include="Enumerations\EForecastType.cs" />
     <Compile Include="Enumerations\EFrequency.cs" />
     <Compile Include="Interfaces\IForecast.cs" />
+    <Compile Include="Interfaces\IForecastHelper.cs" />
     <Compile Include="Interfaces\IForecastItem.cs" />
     <Compile Include="Interfaces\IForecastEngine.cs" />
     <Compile Include="Interfaces\IForecastResult.cs" />

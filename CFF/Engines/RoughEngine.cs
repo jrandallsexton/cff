@@ -15,9 +15,12 @@ namespace CFF.Engines
     {
 
         private TimeSpan _defaultMaxForecastPeriod = new TimeSpan(365, 0, 0, 0);
+        private IForecastHelper _helper = null;
 
-        public IForecastResult CreateForecast(IForecast forecast)
+        public IForecastResult CreateForecast(IForecastHelper helper, IForecast forecast)
         {
+
+            this._helper = helper;
 
             ForecastResult result = new ForecastResult(forecast.AmountBegin);
 
@@ -26,7 +29,7 @@ namespace CFF.Engines
                 forecast.End = forecast.Begin.Add(this._defaultMaxForecastPeriod); }
 
             // get a collection of every day in the period with all of the items in each day that need to be processed
-            Dictionary<DateTime, List<IForecastItem>> values = this.LoadItems(forecast);
+            IDictionary<DateTime, IList<IForecastItem>> values = this.LoadItems(this._helper, forecast);
 
             DateTime idx = forecast.Begin;
             decimal amtBegin = forecast.AmountBegin;
@@ -64,7 +67,7 @@ namespace CFF.Engines
             return result;
         }
 
-        private Dictionary<DateTime, List<IForecastItem>> LoadItems(IForecast forecast)
+        private IDictionary<DateTime, IList<IForecastItem>> LoadItems(IForecastHelper helper, IForecast forecast)
         {
 
             // 1A. Create workspace holders for each forecast item; will be used to determine what days each item will affect the forecast
@@ -79,7 +82,7 @@ namespace CFF.Engines
             }
 
             // 2. Prepopulate a collection representing every day within the forecast window (duration of the forecast)
-            Dictionary<DateTime, List<IForecastItem>> values = new Dictionary<DateTime, List<IForecastItem>>();
+            IDictionary<DateTime, IList<IForecastItem>> values = new Dictionary<DateTime, IList<IForecastItem>>();
 
             DateTime idx = forecast.Begin;
 
@@ -103,23 +106,13 @@ namespace CFF.Engines
                     {
                         values[idx].Add(fcItemCache[ws.Id]);
                         ws.LastProcessed = idx;
-                        ws.Due = this.GetDueDate(ws.LastProcessed, ws.Frequency);
+                        ws.Due = helper.GetDueDate(ws.LastProcessed, ws.Frequency);
                     }
                     idx = idx.AddDays(1d);
                 }
             }
 
             return values;
-        }
-
-        private DateTime GetDueDate(DateTime lastProcessed, EFrequency frequency)
-        {
-            switch (frequency)
-            {
-                case EFrequency.Annually: return lastProcessed.AddYears(1);
-                case EFrequency.BiAnnually: return lastProcessed.AddDays(180);
-                default: return lastProcessed;
-            }
         }
 
     }
