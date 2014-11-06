@@ -1,12 +1,8 @@
 ﻿
-using CFF.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using CFF.Enumerations;
+using CFF.Interfaces;
 
 namespace CFF
 {
@@ -14,7 +10,7 @@ namespace CFF
     public class ForecastHelper : IForecastHelper
     {
 
-        public DateTime GetDueDate(DateTime lastProcessed, Enumerations.EFrequency frequency)
+        public DateTime GetDueDate(DateTime lastProcessed, EFrequency frequency)
         {
             switch (frequency)
             {

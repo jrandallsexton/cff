@@ -17,15 +17,15 @@ namespace CFF.Tests
 {
 
     [TestFixture]
-    public class ForecastTests
+    public class RoughEngineTests
     {
 
         [Test]
-        public void SnapshotForecastModelsCorrectlyOverThirtyDays()
+        public void Snapshot_Forecast_Models_Correctly_Over_Thirty_Days()
         {
 
             // Create the forecast
-            IForecast forecast = new Forecast("Test CFF", EForecastType.Snapshot, new DateTime(2015, 1, 1), 30);
+            Forecast forecast = new Forecast("Test CFF", EForecastType.Snapshot, new DateTime(2015, 1, 1), 30);
 
             // add items to it
             forecast.AddItem(new ForecastItem("Wages", EForecastItemType.Income, EFrequency.Weekly, new Decimal(1000), new DateTime(2015, 1, 6)));
@@ -33,7 +33,7 @@ namespace CFF.Tests
             forecast.AddItem(new ForecastItem("Car Note", EForecastItemType.Expense, EFrequency.Monthly, new Decimal(250), new DateTime(2015, 1, 28)));
 
             // stick it in the engine and process it
-            IForecastEngine engine = new RoughEngine();
+            RoughEngine engine = new RoughEngine();
             IForecastResult result = engine.CreateForecast(new ForecastHelper(), forecast);
 
             Assert.AreEqual(forecast.AmountBegin, result.AmountBegin);

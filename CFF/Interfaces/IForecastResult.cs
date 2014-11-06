@@ -10,7 +10,6 @@ namespace CFF.Interfaces
         Decimal AmountBegin { get; set; }
         Decimal AmountEnd { get; set; }
         IDictionary<DateTime, IForecastResultItem> Results { get; set; }
-
     }
 
 }

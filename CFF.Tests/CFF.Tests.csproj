@@ -43,7 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ForecastHelperTests.cs" />
-    <Compile Include="ForecastTests.cs" />
+    <Compile Include="LinqEngineTests.cs" />
+    <Compile Include="RoughEngineTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
