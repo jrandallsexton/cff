@@ -31,8 +31,8 @@ namespace CFF
             this.Name = name;
             this.Type = type;
             this.Frequency = frequency;
-            this.Begin = begin;
             this.Amount = amount;
+            this.Begin = begin;
         }
 
     }

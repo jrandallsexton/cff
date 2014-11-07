@@ -42,9 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ForecastHelperTests.cs" />
-    <Compile Include="LinqEngineTests.cs" />
-    <Compile Include="RoughEngineTests.cs" />
+    <Compile Include="Factories\ForecastFactory.cs" />
+    <Compile Include="Interfaces\IForecastFactory.cs" />
+    <Compile Include="Misc\ForecastHelperTests.cs" />
+    <Compile Include="Engines\LinqEngineTests.cs" />
+    <Compile Include="Engines\RoughEngineTests.cs" />
+    <Compile Include="Misc\TestCases.cs" />
+    <Compile Include="Mocks\ForecastHelperMock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +60,7 @@
       <Name>CFF</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -13,6 +13,7 @@ namespace CFF.Interfaces
     public interface IForecastHelper
     {
         DateTime GetDueDate(DateTime lastProcessed, EFrequency frequency);
+        IDictionary<DateTime, IList<IForecastItem>> GenerateDueDates(IForecast forecast);
     }
 
 }
