@@ -46,6 +46,7 @@
     <Compile Include="Classes\ForecastResultItem.cs" />
     <Compile Include="Engines\LinqEngine.cs" />
     <Compile Include="Engines\RoughEngine.cs" />
+    <Compile Include="Enumerations\EDurationType.cs" />
     <Compile Include="Enumerations\EForecastItemType.cs" />
     <Compile Include="Enumerations\EForecastType.cs" />
     <Compile Include="Enumerations\EFrequency.cs" />

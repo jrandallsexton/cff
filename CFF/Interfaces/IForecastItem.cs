@@ -19,6 +19,8 @@ namespace CFF
         DateTime Begin { get; set; }
         DateTime End { get; set; }
         Decimal Amount { get; set; }
+        EDurationType DurationType { get; set; }
+        int DurationValue { get; set; }
     }
 
 }

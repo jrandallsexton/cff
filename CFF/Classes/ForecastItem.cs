@@ -20,10 +20,13 @@ namespace CFF
         public DateTime Begin { get; set; }
         public DateTime End { get; set; }
         public Decimal Amount { get; set; }
+        public EDurationType DurationType { get; set; }
+        public int DurationValue { get; set; }
 
         public ForecastItem()
         {
             this.Id = Guid.NewGuid();
+            this.End = DateTime.MaxValue;
         }
 
         public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, DateTime begin) : this()
@@ -33,6 +36,29 @@ namespace CFF
             this.Frequency = frequency;
             this.Amount = amount;
             this.Begin = begin;
+        }
+
+        public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, DateTime begin, DateTime end)
+            : this()
+        {
+            this.Name = name;
+            this.Type = type;
+            this.Frequency = frequency;
+            this.Amount = amount;
+            this.Begin = begin;
+            this.End = end;
+        }
+
+        public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, DateTime begin, EDurationType durationType, int durationValue)
+            : this()
+        {
+            this.Name = name;
+            this.Type = type;
+            this.Frequency = frequency;
+            this.Amount = amount;
+            this.Begin = begin;
+            this.DurationType = durationType;
+            this.DurationValue = durationValue;
         }
 
     }

@@ -32,6 +32,7 @@ namespace CFF
 
         public IDictionary<DateTime, IList<IForecastItem>> GenerateDueDates(IForecast forecast)
         {
+
             // 1A. Create workspace holders for each forecast item; will be used to determine what days each item will affect the forecast
             List<ForecastItemWorkspace> workspaces = new List<ForecastItemWorkspace>();
 
@@ -47,49 +48,61 @@ namespace CFF
             // 2. Prepopulate a collection representing every day within the forecast window (duration of the forecast)
             Dictionary<DateTime, IList<IForecastItem>> values = new Dictionary<DateTime, IList<IForecastItem>>();
 
-            DateTime idx = forecast.Begin;
-
-            while (idx <= forecast.End)
+            for (var idxx = forecast.Begin; idxx <= forecast.End; idxx = idxx.AddDays(1d))
             {
-                values.Add(idx, new List<IForecastItem>());
-                idx = idx.AddDays(1d);
+                values.Add(idxx, new List<IForecastItem>());
             }
 
             // 3. Iterate through each workspace, determine each day it needs to be proccessed and add it to the return collection
             for (var i = 0; i < workspaces.Count; i++)
             {
+
                 var ws = workspaces[i];
 
                 if (_verbose) { Console.WriteLine("Analyzing Forecast Item {0}: {1}", i, ws.Name); }
 
                 // reset the counter as we will be iterating every day within the forecast period again
-                idx = forecast.Begin;
+                var idx = forecast.Begin;
 
                 while (idx <= forecast.End)
                 {
+
                     if (ws.Due == idx)
                     {
+
                         if (_verbose)
                         {
                             Console.WriteLine("\t{0}: Due", idx.ToString("dd-MMM"));
                             Console.WriteLine("\t\tvalues.Count: {0}", values[idx].Count);
                         }
+
                         values[idx].Add(fcItemCache[ws.Id]);
+
                         if (_verbose) { Console.WriteLine("\t\tvalues.Count: {0}", values[idx].Count); }
+
                         ws.LastProcessed = idx;
+
                         ws.Due = this.GetDueDate(ws.LastProcessed, ws.Frequency);
+                        if (ws.Due > ws.End) { break; }
+
                         if (_verbose) { Console.WriteLine("\t\tNext Due: {0}", ws.Due.ToString("dd-MMM")); }
+
                     }
                     else
                     {
                         if (_verbose) { Console.WriteLine("\t{0}: Not Due", idx.ToString("dd-MMM")); }
                     }
+
                     idx = idx.AddDays(1d);
+
                 }
+
             }
 
             return values;
+
         }
+
     }
 
     class ForecastItemWorkspace : ForecastItem

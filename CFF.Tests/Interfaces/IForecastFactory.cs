@@ -13,6 +13,7 @@ namespace CFF.Tests.Interfaces
     internal interface IForecastFactory
     {
         IForecast Create();
+        IForecast CreateWithExpiringItem();
     }
 
 }
