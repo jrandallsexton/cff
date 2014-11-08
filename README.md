@@ -5,7 +5,7 @@ Cash Flow Forecasting
 
 WORK IN PROGRESS.  NOT FOR PUBLIC CONSUMPTION (yet).
 
-After purchasing a popular COTS application <i>(sounds like Rick Cooks)</i>, I was sorely disappointed to learn that the cash flow modeling had been removed.  This was a major need of mine for my own personal finances; this projet attempts to scratch that itch.
+After purchasing a popular COTS application <i>(sounds like Rick Cooks)</i>, I was sorely disappointed to learn that the cash flow modeling had been removed.  This was a major need of mine for my own personal finances; this project attempts to scratch that itch.
 
 The initial thoughts in terms of stages of development will/should/might look a little something like:<br/>
 <ol>
