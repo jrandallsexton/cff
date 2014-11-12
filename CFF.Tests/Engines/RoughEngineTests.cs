@@ -24,12 +24,14 @@ namespace CFF.Tests
     public class RoughEngineTests
     {
 
+        private RoughEngine _engine = null;
         private IForecastFactory _factory = null;
         private IForecastHelper _helper = null;
 
         [TestFixtureSetUp]
         public void Setup()
         {
+            this._engine = new RoughEngine();
             this._helper = new ForecastHelper();
             this._factory = new ForecastFactory();
         }
@@ -42,8 +44,7 @@ namespace CFF.Tests
             IForecast forecast = this._factory.Create();
 
             // stick it in the engine and process it
-            RoughEngine engine = new RoughEngine();
-            IForecastResult result = engine.CreateForecast(new ForecastHelper(), forecast);
+            IForecastResult result = this._engine.CreateForecast(new ForecastHelper(), forecast);
 
             Assert.AreEqual(forecast.AmountBegin, result.AmountBegin);
 
@@ -120,8 +121,7 @@ namespace CFF.Tests
             IForecast forecast = this._factory.CreateWithExpiringItem();
 
             // stick it in the engine and process it
-            RoughEngine engine = new RoughEngine();
-            IForecastResult result = engine.CreateForecast(new ForecastHelper(), forecast);
+            IForecastResult result = this._engine.CreateForecast(new ForecastHelper(), forecast);
 
             Assert.AreEqual(forecast.AmountBegin, result.AmountBegin);
 
@@ -188,6 +188,20 @@ namespace CFF.Tests
 
             Assert.AreEqual(new Decimal(6780), result.AmountEnd);
 
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Engine_Throws_Exception_With_Null_ForecastHelper()
+        {
+            this._engine.CreateForecast(null, this._factory.Create());
+        }
+
+        [Test]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Engine_Throws_Exception_With_Null_Forecast()
+        {
+            this._engine.CreateForecast(this._helper, null);
         }
 
         [TestFixtureTearDown]

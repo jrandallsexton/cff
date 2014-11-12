@@ -21,6 +21,9 @@ namespace CFF.Engines
         public IForecastResult CreateForecast(IForecastHelper helper, IForecast forecast)
         {
 
+            if (helper == null) { throw new ArgumentNullException("IForecastHelper instance cannot be null"); }
+            if (forecast == null) { throw new ArgumentNullException("IForecast instance cannot be null"); }
+
             this._helper = helper;
 
             IForecastResult result = new ForecastResult(forecast.AmountBegin);
