@@ -11,7 +11,7 @@ using CFF.Interfaces;
 namespace CFF.Tests.Mocks
 {
 
-    public class ForecastHelperMock : IForecastHelper 
+    public class MockForecastHelper : IForecastHelper 
     {
 
         public DateTime GetDueDate(DateTime lastProcessed, EFrequency frequency)

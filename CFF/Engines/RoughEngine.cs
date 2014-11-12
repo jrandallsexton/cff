@@ -23,7 +23,7 @@ namespace CFF.Engines
 
             this._helper = helper;
 
-            ForecastResult result = new ForecastResult(forecast.AmountBegin);
+            IForecastResult result = new ForecastResult(forecast.AmountBegin);
 
             // If the forecast type is indefinite, ensure that the ending date isn't greater than one year out
             if ((forecast.Type == EForecastType.Indefinite) && (forecast.End > forecast.Begin.AddYears(1))) {
@@ -77,10 +77,9 @@ namespace CFF.Engines
             result.AmountEnd = amtBegin;
 
             return result;
+
         }
 
     }
-
-
 
 }

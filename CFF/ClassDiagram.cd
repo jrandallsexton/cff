@@ -11,7 +11,7 @@
   <Class Name="CFF.ForecastItem">
     <Position X="2.25" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAICAAAAAAAAAAAAAAAAAASAAIAAEAAAAQAAAAAAAAA=</HashCode>
+      <HashCode>AAICAAAAAAEAAAAAAAAAAASAAIAAEAAAAQAAAAACAAA=</HashCode>
       <FileName>Classes\ForecastItem.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -35,22 +35,15 @@
   <Class Name="CFF.Engines.RoughEngine" BaseTypeListCollapsed="true">
     <Position X="5.25" Y="1.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAQCAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAgAAAAAAAAAAABAAAAAAAAAAAAAAAAAAgAAAAACA=</HashCode>
       <FileName>Engines\RoughEngine.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
-  <Class Name="CFF.Engines.ForecastItemWorkspace">
-    <Position X="3.5" Y="6.5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AIAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Engines\RoughEngine.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Interface Name="CFF.IForecastItem">
-    <Position X="2.25" Y="3.5" Width="1.5" />
+    <Position X="2.25" Y="4" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAICAAAAAAAAAAAAAAAAAASAAIAAEAAAAQAAAAAAAAA=</HashCode>
+      <HashCode>AAICAAAAAAEAAAAAAAAAAASAAIAAEAAAAQAAAAACAAA=</HashCode>
       <FileName>Interfaces\IForecastItem.cs</FileName>
     </TypeIdentifier>
   </Interface>
@@ -62,7 +55,7 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="CFF.Interfaces.IForecastEngine">
-    <Position X="5.25" Y="3.5" Width="1.5" />
+    <Position X="5.25" Y="4" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IForecastEngine.cs</FileName>

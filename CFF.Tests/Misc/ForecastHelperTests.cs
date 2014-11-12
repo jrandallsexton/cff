@@ -21,7 +21,7 @@ namespace CFF.Tests
     public class ForecastHelperTests
     {
 
-        private ForecastHelper _helper = null;
+        private IForecastHelper _helper = null;
         private IForecastFactory _factory = null;
 
         [TestFixtureSetUp]
