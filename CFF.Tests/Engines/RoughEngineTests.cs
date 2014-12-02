@@ -204,6 +204,18 @@ namespace CFF.Tests
             this._engine.CreateForecast(this._helper, null);
         }
 
+        [Test]
+        public void ProcessRevolvingAcct()
+        {
+            ForecastRevAccount rev = new ForecastRevAccount();
+            rev.InitialAmount = 5000.00m;
+            rev.InterestRate = 00.189m;
+            rev.PaymentPercent = 0.04m;
+            rev.MinimumPayment = 15.00m;
+
+            this._engine.ProcessRevolving(rev);
+
+        }
         [TestFixtureTearDown]
         public void TearDown()
         {

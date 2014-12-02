@@ -50,12 +50,14 @@
     <Compile Include="Enumerations\EForecastItemType.cs" />
     <Compile Include="Enumerations\EForecastType.cs" />
     <Compile Include="Enumerations\EFrequency.cs" />
+    <Compile Include="Implementations\ForecastRevAccount.cs" />
     <Compile Include="Interfaces\IForecast.cs" />
     <Compile Include="Interfaces\IForecastHelper.cs" />
     <Compile Include="Interfaces\IForecastItem.cs" />
     <Compile Include="Interfaces\IForecastEngine.cs" />
     <Compile Include="Interfaces\IForecastResult.cs" />
     <Compile Include="Interfaces\IForecastResultItem.cs" />
+    <Compile Include="Interfaces\IRevolvingAccount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

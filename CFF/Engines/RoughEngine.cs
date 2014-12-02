@@ -83,6 +83,34 @@ namespace CFF.Engines
 
         }
 
+        public void ProcessRevolving(IRevolvingAccount account)
+        {
+
+            decimal balance = account.InitialAmount;
+
+            var idx = 1;
+            while (balance > 0)
+            {
+                // calculate the payment
+                var payment = balance * account.PaymentPercent;
+                if (payment < account.MinimumPayment) { payment = account.MinimumPayment; }
+
+                // calculate the interest
+                var interest = balance * account.InterestRate / 12;
+
+                balance += interest;
+
+                // see if we can pay off the balance
+                if (payment > balance) { payment = balance; }
+                balance -= payment;
+
+                Console.WriteLine("{0}\tPayment: {1:C}\tInterest: {2:C}\tBalance: {3:C}", idx, payment, interest, balance);
+
+                idx++;
+            }
+
+        }
+
     }
 
 }
