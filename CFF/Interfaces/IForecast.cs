@@ -19,9 +19,9 @@ namespace CFF.Interfaces
         DateTime Begin { get; set; }
         DateTime End { get; set; }
         Decimal AmountBegin { get; set; }
-        IEnumerable<IForecastItem> Items { get; }
+        IEnumerable<ForecastItem> Items { get; }
 
-        void AddItem(IForecastItem item);
+        void AddItem(ForecastItem item);
     }
 
 }

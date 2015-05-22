@@ -37,19 +37,21 @@ namespace CFF.Tests.Misc
         {
 
             // set-up
-            DateTime now = DateTime.Now;
+            var now = DateTime.Now;
 
-            int yrStart = now.Year;
-            int moStart = now.Month;
-            int dyStart = now.Day;
+            var yrStart = now.Year;
+            var moStart = now.Month;
+            var dyStart = now.Day;
 
-            decimal balanceStart = 400.00m;
+            const decimal balanceStart = 400.00m;
 
-            int duration = 90;
+            const int duration = 90;
              
             // Create the forecast
-            Forecast forecast = new Forecast("Test Case One", EForecastType.Snapshot, new DateTime(yrStart, moStart, dyStart), duration);
-            forecast.AmountBegin = balanceStart;
+            var forecast = new Forecast("Test Case One", EForecastType.Snapshot, new DateTime(yrStart, moStart, dyStart), duration)
+            {
+                AmountBegin = balanceStart
+            };
 
             // add items to it
             forecast.AddItem(new ForecastItem("Wages", EForecastItemType.Income, EFrequency.Weekly, 1615.00m, new DateTime(yrStart, moStart, 15)));
@@ -68,9 +70,9 @@ namespace CFF.Tests.Misc
             forecast.AddItem(new ForecastItem("Groceries", EForecastItemType.Expense, EFrequency.Weekly, 150.00m, new DateTime(yrStart, moStart, 11)));
 
             // stick it in the engine and process it
-            IForecastResult result = this._engine.CreateForecast(this._helper, forecast);
+            var result = this._engine.CreateForecast(this._helper, forecast);
 
-            DateTime idx = new DateTime(yrStart, moStart, dyStart);
+            var idx = new DateTime(yrStart, moStart, dyStart);
 
             while (idx < forecast.End)
             {
@@ -79,6 +81,48 @@ namespace CFF.Tests.Misc
             }
 
             
+        }
+
+        /// <summary>
+        /// This test is to ensure that forecast engines ignore events that should have already occured
+        /// i.e. If I start a forecast on the 15th, it should not process, for example, a mortgage payment that was on the 5th
+        /// </summary>
+        [Test]
+        public void Forecast_Processes_InMonth_Items_Correctly()
+        {
+            // set-up
+            var now = DateTime.Now;
+
+            var yrStart = now.Year;
+            var moStart = now.Month;
+            const int dyStart = 15;
+
+            const decimal balanceStart = 500.00m;
+
+            const int duration = 60;
+
+            // Create the forecast
+            var forecast = new Forecast("Forecast_Processes_InMonth_Items_Correctly", EForecastType.Snapshot, new DateTime(yrStart, moStart, dyStart), duration)
+            {
+                AmountBegin = balanceStart
+            };
+
+            // add items to it
+            forecast.AddItem(new ForecastItem("Wages", EForecastItemType.Income, EFrequency.Weekly, 2000.00m, new DateTime(yrStart, moStart, 22)));
+            forecast.AddItem(new ForecastItem("Mortgage", EForecastItemType.Expense, EFrequency.Monthly, 1000.00m, new DateTime(yrStart, moStart, 5)));
+
+            // stick it in the engine and process it
+            var result = this._engine.CreateForecast(this._helper, forecast);
+
+            var idx = new DateTime(yrStart, moStart, dyStart);
+
+            while (idx < forecast.End)
+            {
+                Console.WriteLine("{0}: {1:C}", idx.ToString("dd-MMM-yyyy"), result.Results[idx].AmountEnd);
+                idx = idx.AddDays(1);
+            }
+
+            Assert.That(result.AmountEnd == 14500.00m);
         }
 
         [TestFixtureTearDown]

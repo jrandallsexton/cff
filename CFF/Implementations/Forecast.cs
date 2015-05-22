@@ -14,7 +14,7 @@ namespace CFF
     public class Forecast : IForecast 
     {
 
-        private List<IForecastItem> _items = null;
+        private List<ForecastItem> _items = null;
 
         public string Name { get; set; }
         public string Description { get; set; }
@@ -24,12 +24,12 @@ namespace CFF
         public DateTime End { get; set; }
         public Decimal AmountBegin { get; set; }
 
-        public IEnumerable<IForecastItem> Items { get { return this._items; } }
+        public IEnumerable<ForecastItem> Items { get { return this._items; } }
 
         public Forecast()
         {
             this.Created = DateTime.Now;
-            this._items = new List<IForecastItem>();
+            this._items = new List<ForecastItem>();
         }
 
         public Forecast(string name, EForecastType type, DateTime begin, int durationInDays) : this()
@@ -40,7 +40,7 @@ namespace CFF
             if (this.Type == EForecastType.Snapshot) { this.End = this.Begin.AddDays(durationInDays); }
         }
 
-        public void AddItem(IForecastItem item)
+        public void AddItem(ForecastItem item)
         {
             this._items.Add(item);
         }

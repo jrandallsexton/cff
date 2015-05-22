@@ -15,14 +15,14 @@ namespace CFF.Engines
 
         private bool _verbose = false;
 
-        private TimeSpan _defaultMaxForecastPeriod = new TimeSpan(365, 0, 0, 0);
+        private readonly TimeSpan _defaultMaxForecastPeriod = new TimeSpan(365, 0, 0, 0);
         private IForecastHelper _helper = null;
 
         public IForecastResult CreateForecast(IForecastHelper helper, IForecast forecast)
         {
 
-            if (helper == null) { throw new ArgumentNullException("IForecastHelper instance cannot be null"); }
-            if (forecast == null) { throw new ArgumentNullException("IForecast instance cannot be null"); }
+            if (helper == null) { throw new ArgumentNullException("helper"); }
+            if (forecast == null) { throw new ArgumentNullException("forecast"); }
 
             this._helper = helper;
 
@@ -33,11 +33,10 @@ namespace CFF.Engines
                 forecast.End = forecast.Begin.Add(this._defaultMaxForecastPeriod); }
 
             // get a collection of every day in the period with all of the items in each day that need to be processed
-            IDictionary<DateTime, IList<IForecastItem>> values = this._helper.GenerateDueDates(forecast);
+            var values = this._helper.GenerateDueDates(forecast);
 
-            DateTime idx = forecast.Begin;
-            decimal amtBegin = forecast.AmountBegin;
-            decimal amtEnd = forecast.AmountBegin;
+            var idx = forecast.Begin;
+            var amtBegin = forecast.AmountBegin;
 
             while (idx <= forecast.End)
             {

@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enumerations\EVariabilityType.cs" />
     <Compile Include="Implementations\Forecast.cs" />
     <Compile Include="Implementations\ForecastHelper.cs" />
     <Compile Include="Implementations\ForecastItem.cs" />
