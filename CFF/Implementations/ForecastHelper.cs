@@ -11,7 +11,7 @@ namespace CFF
     public class ForecastHelper : IForecastHelper
     {
 
-        private bool _verbose = false;
+        private bool _verbose = true;
 
         public DateTime GetDueDate(DateTime lastProcessed, EFrequency frequency)
         {
@@ -22,7 +22,7 @@ namespace CFF
                 case EFrequency.BiMonthly: return lastProcessed.AddMonths(2);
                 case EFrequency.BiWeekly: return lastProcessed.AddDays(14);
                 case EFrequency.Daily: return lastProcessed.AddDays(1);
-                //case EFrequency.Intermittent
+                case EFrequency.Intermittent: return DateTime.MaxValue;
                 case EFrequency.Monthly: return lastProcessed.AddMonths(1);
                 case EFrequency.Quarterly: return lastProcessed.AddMonths(3);
                 case EFrequency.Weekly: return lastProcessed.AddDays(7);
@@ -34,10 +34,10 @@ namespace CFF
         {
 
             // 1A. Create workspace holders for each forecast item; will be used to determine what days each item will affect the forecast
-            List<ForecastItemWorkspace> workspaces = new List<ForecastItemWorkspace>();
+            var workspaces = new List<ForecastItemWorkspace>();
 
             // 1B. We will also cache the forecast items so that we can retrieve them by the key
-            Dictionary<Guid, IForecastItem> fcItemCache = new Dictionary<Guid, IForecastItem>();
+            var fcItemCache = new Dictionary<Guid, IForecastItem>();
 
             foreach (IForecastItem item in forecast.Items)
             {
@@ -46,7 +46,7 @@ namespace CFF
             }
 
             // 2. Prepopulate a collection representing every day within the forecast window (duration of the forecast)
-            Dictionary<DateTime, IList<IForecastItem>> values = new Dictionary<DateTime, IList<IForecastItem>>();
+            var values = new Dictionary<DateTime, IList<IForecastItem>>();
 
             for (var idxx = forecast.Begin; idxx <= forecast.End; idxx = idxx.AddDays(1d))
             {
@@ -90,7 +90,7 @@ namespace CFF
                     }
                     else
                     {
-                        if (_verbose) { Console.WriteLine("\t{0}: Not Due", idx.ToString("dd-MMM")); }
+                        //if (_verbose) { Console.WriteLine("\t{0}: Not Due", idx.ToString("dd-MMM")); }
                     }
 
                     idx = idx.AddDays(1d);

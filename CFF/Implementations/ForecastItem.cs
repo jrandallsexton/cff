@@ -17,6 +17,7 @@ namespace CFF
         public string Name { get; set; }
         public EForecastItemType Type { get; set; }
         public EFrequency Frequency { get; set; }
+        public int StartDate { get; set; }
         public DateTime Begin { get; set; }
         public DateTime End { get; set; }
         public Decimal Amount { get; set; }
@@ -36,6 +37,25 @@ namespace CFF
             this.Frequency = frequency;
             this.Amount = amount;
             this.Begin = begin;
+        }
+
+        public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, int firstDayOfMonth)
+            : this()
+        {
+            this.Name = name;
+            this.Type = type;
+            this.Frequency = frequency;
+            this.Amount = amount;
+            this.StartDate = firstDayOfMonth;
+            if (firstDayOfMonth < DateTime.Now.Day)
+            {
+                var nextMonth = DateTime.Now.AddMonths(1);
+                this.Begin = new DateTime(nextMonth.Year, nextMonth.Month, firstDayOfMonth);
+            }
+            else
+            {
+                this.Begin = new DateTime(DateTime.Now.Year, DateTime.Now.Month, firstDayOfMonth);
+            }
         }
 
         public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, DateTime begin, DateTime end)
