@@ -11,7 +11,7 @@ namespace CFF
     public class ForecastHelper : IForecastHelper
     {
 
-        private bool _verbose = true;
+        private bool _verbose = false;
 
         public DateTime GetDueDate(DateTime lastProcessed, EFrequency frequency)
         {

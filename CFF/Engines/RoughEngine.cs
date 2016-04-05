@@ -100,7 +100,8 @@ namespace CFF.Engines
                 if (payment > balance) { payment = balance; }
                 balance -= payment;
 
-                Console.WriteLine("{0}\tPayment: {1:C}\tInterest: {2:C}\tBalance: {3:C}", idx, payment, interest, balance);
+                if (_verbose)
+                    Console.WriteLine("{0}\tPayment: {1:C}\tInterest: {2:C}\tBalance: {3:C}", idx, payment, interest, balance);
 
                 idx++;
             }
