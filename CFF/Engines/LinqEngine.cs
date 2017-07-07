@@ -12,6 +12,11 @@ namespace CFF.Engines
 
     public class LinqEngine : IForecastEngine 
     {
+        private bool _verbose = false;
+        public void IsVerbose(bool isVerbose)
+        {
+            this._verbose = isVerbose;
+        }
 
         public IForecastResult CreateForecast(IForecastHelper helper, IForecast forecast)
         {

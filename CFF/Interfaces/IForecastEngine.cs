@@ -7,6 +7,7 @@ namespace CFF.Interfaces
     public interface IForecastEngine
     {
         IForecastResult CreateForecast(IForecastHelper helper, IForecast forecast);
+        void IsVerbose(bool isVerbose);
     }
 
 }

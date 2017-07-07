@@ -11,7 +11,17 @@ namespace CFF
     public class ForecastHelper : IForecastHelper
     {
 
-        private bool _verbose = false;
+        private readonly bool _verbose = true;
+
+        public ForecastHelper()
+        {
+            
+        }
+
+        public ForecastHelper(bool verbose)
+        {
+            _verbose = verbose;
+        }
 
         public DateTime GetDueDate(DateTime lastProcessed, EFrequency frequency)
         {
@@ -41,7 +51,16 @@ namespace CFF
 
             foreach (IForecastItem item in forecast.Items)
             {
-                workspaces.Add(new ForecastItemWorkspace(item, DateTime.MaxValue, item.Begin));
+                if (item.LastProcessed.HasValue)
+                {
+                    workspaces.Add(new ForecastItemWorkspace(item, DateTime.MaxValue, this.GetDueDate(item.LastProcessed.Value, item.Frequency)));
+                }
+                else
+                {
+                    workspaces.Add(new ForecastItemWorkspace(item, DateTime.MaxValue, item.Begin));
+                }
+                
+                //workspaces.Add(new ForecastItemWorkspace(item, item.Begin, item.Begin));
                 fcItemCache.Add(item.Id, item);
             }
 
@@ -59,7 +78,7 @@ namespace CFF
 
                 var ws = workspaces[i];
 
-                if (_verbose) { Console.WriteLine("Analyzing Forecast Item {0}: {1}", i, ws.Name); }
+                if (_verbose) { Console.WriteLine("Analyzing Forecast Item {0}: {1} -> {2}", i, ws.Name, ws.Amount); }
 
                 // reset the counter as we will be iterating every day within the forecast period again
                 var idx = forecast.Begin;
@@ -73,12 +92,12 @@ namespace CFF
                         if (_verbose)
                         {
                             Console.WriteLine("\t{0}: Due", idx.ToString("dd-MMM"));
-                            Console.WriteLine("\t\tvalues.Count: {0}", values[idx].Count);
+                            //Console.WriteLine("\t\tvalues.Count: {0}", values[idx].Count);
                         }
 
                         values[idx].Add(fcItemCache[ws.Id]);
 
-                        if (_verbose) { Console.WriteLine("\t\tvalues.Count: {0}", values[idx].Count); }
+                        //if (_verbose) { Console.WriteLine("\t\tvalues.Count: {0}", values[idx].Count); }
 
                         ws.LastProcessed = idx;
 
@@ -88,10 +107,10 @@ namespace CFF
                         if (_verbose) { Console.WriteLine("\t\tNext Due: {0}", ws.Due.ToString("dd-MMM")); }
 
                     }
-                    else
-                    {
-                        //if (_verbose) { Console.WriteLine("\t{0}: Not Due", idx.ToString("dd-MMM")); }
-                    }
+                    //else
+                    //{
+                    //    if (_verbose) { Console.WriteLine("\t{0}: Not Due", idx.ToString("dd-MMM")); }
+                    //}
 
                     idx = idx.AddDays(1d);
 
@@ -104,26 +123,4 @@ namespace CFF
         }
 
     }
-
-    class ForecastItemWorkspace : ForecastItem
-    {
-
-        public DateTime LastProcessed { get; set; }
-        public DateTime Due { get; set; }
-
-        public ForecastItemWorkspace(IForecastItem forecastItem, DateTime lastProcessed, DateTime due)
-        {
-            this.Id = forecastItem.Id;
-            this.Amount = forecastItem.Amount;
-            this.Begin = forecastItem.Begin;
-            this.End = forecastItem.End;
-            this.Frequency = forecastItem.Frequency;
-            this.Name = forecastItem.Name;
-            this.Type = forecastItem.Type;
-            this.LastProcessed = lastProcessed;
-            this.Due = due;
-        }
-
-    }
-
 }

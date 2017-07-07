@@ -20,6 +20,7 @@ namespace CFF
         public int StartDate { get; set; }
         public DateTime Begin { get; set; }
         public DateTime End { get; set; }
+        public DateTime? LastProcessed { get; set; }
         public Decimal Amount { get; set; }
         public EDurationType DurationType { get; set; }
         public int DurationValue { get; set; }
@@ -30,13 +31,15 @@ namespace CFF
             this.End = DateTime.MaxValue;
         }
 
-        public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, DateTime begin) : this()
+        public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, DateTime begin, DateTime? lastProcessed)
+            : this()
         {
             this.Name = name;
             this.Type = type;
             this.Frequency = frequency;
             this.Amount = amount;
             this.Begin = begin;
+            this.LastProcessed = lastProcessed;
         }
 
         public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, int firstDayOfMonth)
@@ -58,7 +61,7 @@ namespace CFF
             }
         }
 
-        public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, DateTime begin, DateTime end)
+        public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, DateTime begin, DateTime end, DateTime? lastProcessed)
             : this()
         {
             this.Name = name;
@@ -67,6 +70,7 @@ namespace CFF
             this.Amount = amount;
             this.Begin = begin;
             this.End = end;
+            this.LastProcessed = lastProcessed;
         }
 
         public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, DateTime begin, EDurationType durationType, int durationValue)

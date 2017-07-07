@@ -43,6 +43,7 @@
     <Compile Include="Implementations\Forecast.cs" />
     <Compile Include="Implementations\ForecastHelper.cs" />
     <Compile Include="Implementations\ForecastItem.cs" />
+    <Compile Include="Implementations\ForecastItemWorkspace.cs" />
     <Compile Include="Implementations\ForecastResult.cs" />
     <Compile Include="Implementations\ForecastResultItem.cs" />
     <Compile Include="Engines\LinqEngine.cs" />

@@ -21,6 +21,7 @@ namespace CFF
         Decimal Amount { get; set; }
         EDurationType DurationType { get; set; }
         int DurationValue { get; set; }
+        DateTime? LastProcessed { get; set; }
     }
 
 }

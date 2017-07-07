@@ -15,6 +15,11 @@ namespace CFF.Engines
         private readonly TimeSpan _defaultMaxForecastPeriod = new TimeSpan(365, 0, 0, 0);
         private IForecastHelper _helper = null;
 
+        public void IsVerbose(bool isVerbose)
+        {
+            this._verbose = isVerbose;
+        }
+
         public IForecastResult CreateForecast(IForecastHelper helper, IForecast forecast)
         {
 
@@ -49,12 +54,12 @@ namespace CFF.Engines
                     {
                         if (item.Type == EForecastItemType.Income)
                         {
-                            if (_verbose) { Console.WriteLine("\tIncome: {0:C}\t{1}", item.Amount, item.Name); }
+                            if (_verbose) { Console.WriteLine("\t\tIncome: {0:C}\t{1}", item.Amount, item.Name); }
                             amtBegin += item.Amount;
                         }
                         else
                         {
-                            if (_verbose) { Console.WriteLine("\tExpense: {0:C}\t{1}", item.Amount, item.Name); }
+                            if (_verbose) { Console.WriteLine("\t\tExpense: {0:C}\t{1}", item.Amount, item.Name); }
                             amtBegin -= item.Amount;
                         }
                     }
