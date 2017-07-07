@@ -1,11 +1,14 @@
 ﻿
 using System;
-
+using System.Diagnostics;
+using System.IO;
 using CFF.Engines;
 using CFF.Enumerations;
 using CFF.Interfaces;
 
+
 using NUnit.Framework;
+using OfficeOpenXml;
 
 namespace CFF.Tests.Misc
 {
@@ -94,13 +97,76 @@ namespace CFF.Tests.Misc
             while (idx < forecast.End)
             {
                 Console.WriteLine("\t{0}: {1:C}", idx.ToString("dd-MMM-yyyy"), result.Results[idx].AmountEnd);
-                //if ((idx.Day%15 == 0) || (result.Results[idx].AmountEnd < 0))
-                //{
-                //    Console.WriteLine("{0}: {1:C}", idx.ToString("dd-MMM-yyyy"), result.Results[idx].AmountEnd);
-                //}
                 idx = idx.AddDays(1);
             }
             Console.WriteLine("***** END RESULTS *****");
+
+            // Set the file name and get the output directory
+            var fileName = "CFF_Report_" + DateTime.Now.ToString("yyyy-MM-dd--hh-mm-ss") + ".xlsx";
+            var outputDir = @"C:\\";
+
+            // Create the file using the FileInfo object
+            var file = new FileInfo(outputDir + fileName);
+
+            // Create the package and make sure you wrap it in a using statement
+            using (var package = new ExcelPackage(file))
+            {
+                // add a new worksheet to the empty workbook
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Cash Flow Forecast - " + DateTime.Now.ToShortDateString());
+
+                // --------- Data and styling goes here -------------- //
+                // Add some formatting to the worksheet
+                worksheet.TabColor = System.Drawing.Color.Blue;
+                worksheet.DefaultRowHeight = 12;
+                worksheet.HeaderFooter.FirstFooter.LeftAlignedText = string.Format("Generated: {0}", DateTime.Now.ToShortDateString());
+                worksheet.Row(1).Height = 20;
+                worksheet.Row(2).Height = 18;
+
+                // Start adding the header
+                // First of all the first row
+                worksheet.Cells[1, 1].Value = "Name";
+                worksheet.Cells[1, 2].Value = "Date";
+                worksheet.Cells[1, 3].Value = "Amount";
+
+                worksheet.Column(2).Style.Numberformat.Format = "yyyy-mm-dd";
+                worksheet.Column(3).Style.Numberformat.Format = "$###,###,##0.00";
+
+                var idxRow = 2;
+
+                idx = new DateTime(yrStart, moStart, dyStart);
+
+                Console.WriteLine("***** RESULTS *****");
+                while (idx < forecast.End)
+                {
+                    var day = result.Results[idx];
+
+                    if (day.Transactions.Count == 0)
+                    {
+                        idx = idx.AddDays(1);
+                        continue;
+                    }
+
+                    foreach (var kvp in day.Transactions)
+                    {
+                        worksheet.Cells[idxRow, 1].Value = kvp.Key;
+                        worksheet.Cells[idxRow, 2].Value = idx;
+                        worksheet.Cells[idxRow, 3].Value = Convert.ToDecimal(kvp.Value);
+                        idxRow++;
+                    }
+
+                    idx = idx.AddDays(1);
+                }
+
+                // Set some document properties
+                package.Workbook.Properties.Title = "Cash Flow Forecast";
+                package.Workbook.Properties.Author = "jrandallsexton@gmail.com";
+                package.Workbook.Properties.Company = "J. Randall Sexton";
+
+                // save our new workbook and we are done!
+                package.Save();
+            }
+
+            Process.Start(Path.Combine(outputDir, fileName));
 
         }
 

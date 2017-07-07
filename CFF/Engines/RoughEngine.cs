@@ -1,6 +1,6 @@
 ﻿
 using System;
-
+using System.Collections.Generic;
 using CFF.Enumerations;
 using CFF.Interfaces;
 
@@ -43,6 +43,8 @@ namespace CFF.Engines
             while (idx <= forecast.End)
             {
 
+                var transactions = new Dictionary<string, decimal>();
+
                 // process items that need processing
                 if ((values.ContainsKey(idx)) && (values[idx].Count > 0))
                 {
@@ -56,11 +58,13 @@ namespace CFF.Engines
                         {
                             if (_verbose) { Console.WriteLine("\t\tIncome: {0:C}\t{1}", item.Amount, item.Name); }
                             amtBegin += item.Amount;
+                            transactions.Add(item.Name, item.Amount);
                         }
                         else
                         {
                             if (_verbose) { Console.WriteLine("\t\tExpense: {0:C}\t{1}", item.Amount, item.Name); }
                             amtBegin -= item.Amount;
+                            transactions.Add(item.Name, -item.Amount);
                         }
                     }
 
@@ -71,7 +75,7 @@ namespace CFF.Engines
                 }
 
                 // store the daily result
-                result.Results.Add(idx, new ForecastResultItem(amtBegin, amtBegin));
+                result.Results.Add(idx, new ForecastResultItem(amtBegin, amtBegin) { Transactions = transactions });
 
                 //amtBegin = amtEnd;
 

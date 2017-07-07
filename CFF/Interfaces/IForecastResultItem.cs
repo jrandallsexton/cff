@@ -1,5 +1,5 @@
 ﻿
-using System;
+using System.Collections.Generic;
 
 namespace CFF.Interfaces
 {
@@ -8,6 +8,7 @@ namespace CFF.Interfaces
     {
         decimal AmountBegin { get; set; }
         decimal AmountEnd { get; set; }
+        Dictionary<string, decimal> Transactions { get; set; }
     }
 
 }
