@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using CFF.Engines;
@@ -66,15 +67,15 @@ namespace CFF.Tests.Misc
             forecast.AddItem(new ForecastItem("WF - Jul", EForecastItemType.Expense, EFrequency.Intermittent, 1555.00m, 24));
 
             forecast.AddItem(new ForecastItem("Electric", EForecastItemType.Expense, EFrequency.Monthly, 300.00m, 6));
-            forecast.AddItem(new ForecastItem("Water", EForecastItemType.Expense, EFrequency.Monthly, 150.00m, 22));
+            forecast.AddItem(new ForecastItem("Water", EForecastItemType.Expense, EFrequency.Monthly, 200.00m, 22));
             forecast.AddItem(new ForecastItem("Internet", EForecastItemType.Expense, EFrequency.Monthly, 100.00m, 28));
             forecast.AddItem(new ForecastItem("Verizon", EForecastItemType.Expense, EFrequency.Monthly, 260.00m, 18));
             forecast.AddItem(new ForecastItem("Geico", EForecastItemType.Expense, EFrequency.Monthly, 85.00m, 10));
             forecast.AddItem(new ForecastItem("Daycare", EForecastItemType.Expense, EFrequency.BiWeekly, 250.00m, now, new DateTime(yrStart, moStart - 1, 23)));
 
             forecast.AddItem(new ForecastItem("Rental - Lawn", EForecastItemType.Expense, EFrequency.Monthly, 180.00m, 7));
-            forecast.AddItem(new ForecastItem("Rental - Pool", EForecastItemType.Expense, EFrequency.Monthly, 245.00m, 6));
-            //forecast.AddItem(new ForecastItem("Rental - Pool", EForecastItemType.Expense, EFrequency.Monthly, 245.00m, now, new DateTime(yrStart, 9, 7), new DateTime(yrStart, 6, 7)));
+            //forecast.AddItem(new ForecastItem("Rental - Pool", EForecastItemType.Expense, EFrequency.Monthly, 245.00m, 6));
+            forecast.AddItem(new ForecastItem("Rental - Pool", EForecastItemType.Expense, EFrequency.Monthly, 245.00m, now, new DateTime(yrStart, 10, 7), new DateTime(yrStart, 6, 7)));
             forecast.AddItem(new ForecastItem("Rental - ADT", EForecastItemType.Expense, EFrequency.Monthly, 42.62m, 29));
 
             forecast.AddItem(new ForecastItem("Netflix", EForecastItemType.Expense, EFrequency.Monthly, 12.90m, 16));
@@ -92,81 +93,115 @@ namespace CFF.Tests.Misc
             var result = this._engine.CreateForecast(this._helper, forecast);
 
             var idx = new DateTime(yrStart, moStart, dyStart);
+            var lowBalances = new Dictionary<DateTime, decimal>();
+            var currentMonth = moStart;
+
+            var lowBalance = 999999.00m;
+            var lowBalanceDate = DateTime.MaxValue;
 
             Console.WriteLine("***** RESULTS *****");
             while (idx < forecast.End)
             {
-                Console.WriteLine("\t{0}: {1:C}", idx.ToString("dd-MMM-yyyy"), result.Results[idx].AmountEnd);
+                // did the month change?
+                if (currentMonth != idx.Month)
+                {
+                    //Console.WriteLine($"Month changed from {currentMonth} to {idx.Month}");
+                    // write the low balance for the previous month ...
+                    lowBalances.Add(lowBalanceDate, lowBalance);
+                    //Console.WriteLine($"\tAdded {lowBalanceDate} to {lowBalance}");
+                    // then reset the lowBalance for the current month
+                    lowBalance = 999999.00m;
+                    lowBalanceDate = DateTime.MaxValue;
+                    currentMonth = idx.Month;
+                }
+
+                var dailyBalance = result.Results[idx].AmountEnd;
+
+                if (dailyBalance < lowBalance)
+                {
+                    lowBalance = dailyBalance;
+                    lowBalanceDate = idx;
+                }
+
+                Console.WriteLine("\t{0:dd-MMM-yyyy}: {1:C}", idx, dailyBalance);
                 idx = idx.AddDays(1);
             }
             Console.WriteLine("***** END RESULTS *****");
-
-            // Set the file name and get the output directory
-            var fileName = "CFF_Report_" + DateTime.Now.ToString("yyyy-MM-dd--hh-mm-ss") + ".xlsx";
-            var outputDir = @"C:\\";
-
-            // Create the file using the FileInfo object
-            var file = new FileInfo(outputDir + fileName);
-
-            // Create the package and make sure you wrap it in a using statement
-            using (var package = new ExcelPackage(file))
+            Console.WriteLine("");
+            Console.WriteLine("***** LOW BALANCES *****");
+            // now i want to see the low balance for each month
+            foreach (var kvp in lowBalances)
             {
-                // add a new worksheet to the empty workbook
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Cash Flow Forecast - " + DateTime.Now.ToShortDateString());
-
-                // --------- Data and styling goes here -------------- //
-                // Add some formatting to the worksheet
-                worksheet.TabColor = System.Drawing.Color.Blue;
-                worksheet.DefaultRowHeight = 12;
-                worksheet.HeaderFooter.FirstFooter.LeftAlignedText = string.Format("Generated: {0}", DateTime.Now.ToShortDateString());
-                worksheet.Row(1).Height = 20;
-                worksheet.Row(2).Height = 18;
-
-                // Start adding the header
-                // First of all the first row
-                worksheet.Cells[1, 1].Value = "Name";
-                worksheet.Cells[1, 2].Value = "Date";
-                worksheet.Cells[1, 3].Value = "Amount";
-
-                worksheet.Column(2).Style.Numberformat.Format = "yyyy-mm-dd";
-                worksheet.Column(3).Style.Numberformat.Format = "$###,###,##0.00";
-
-                var idxRow = 2;
-
-                idx = new DateTime(yrStart, moStart, dyStart);
-
-                Console.WriteLine("***** RESULTS *****");
-                while (idx < forecast.End)
-                {
-                    var day = result.Results[idx];
-
-                    if (day.Transactions.Count == 0)
-                    {
-                        idx = idx.AddDays(1);
-                        continue;
-                    }
-
-                    foreach (var kvp in day.Transactions)
-                    {
-                        worksheet.Cells[idxRow, 1].Value = kvp.Key;
-                        worksheet.Cells[idxRow, 2].Value = idx;
-                        worksheet.Cells[idxRow, 3].Value = Convert.ToDecimal(kvp.Value);
-                        idxRow++;
-                    }
-
-                    idx = idx.AddDays(1);
-                }
-
-                // Set some document properties
-                package.Workbook.Properties.Title = "Cash Flow Forecast";
-                package.Workbook.Properties.Author = "jrandallsexton@gmail.com";
-                package.Workbook.Properties.Company = "J. Randall Sexton";
-
-                // save our new workbook and we are done!
-                package.Save();
+                Console.WriteLine("\t{0}: {1:C}", kvp.Key.ToString("dd-MMM-yyyy"), kvp.Value);
             }
+            Console.WriteLine("***** END LOW BALANCES *****");
 
-            Process.Start(Path.Combine(outputDir, fileName));
+            //// Set the file name and get the output directory
+            //var fileName = "CFF_Report_" + DateTime.Now.ToString("yyyy-MM-dd--hh-mm-ss") + ".xlsx";
+            //var outputDir = @"C:\\";
+
+            //// Create the file using the FileInfo object
+            //var file = new FileInfo(outputDir + fileName);
+
+            //// Create the package and make sure you wrap it in a using statement
+            //using (var package = new ExcelPackage(file))
+            //{
+            //    // add a new worksheet to the empty workbook
+            //    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Cash Flow Forecast - " + DateTime.Now.ToShortDateString());
+
+            //    // --------- Data and styling goes here -------------- //
+            //    // Add some formatting to the worksheet
+            //    worksheet.TabColor = System.Drawing.Color.Blue;
+            //    worksheet.DefaultRowHeight = 12;
+            //    worksheet.HeaderFooter.FirstFooter.LeftAlignedText = string.Format("Generated: {0}", DateTime.Now.ToShortDateString());
+            //    worksheet.Row(1).Height = 20;
+            //    worksheet.Row(2).Height = 18;
+
+            //    // Start adding the header
+            //    // First of all the first row
+            //    worksheet.Cells[1, 1].Value = "Name";
+            //    worksheet.Cells[1, 2].Value = "Date";
+            //    worksheet.Cells[1, 3].Value = "Amount";
+
+            //    worksheet.Column(2).Style.Numberformat.Format = "yyyy-mm-dd";
+            //    worksheet.Column(3).Style.Numberformat.Format = "$###,###,##0.00";
+
+            //    var idxRow = 2;
+
+            //    idx = new DateTime(yrStart, moStart, dyStart);
+
+            //    Console.WriteLine("***** RESULTS *****");
+            //    while (idx < forecast.End)
+            //    {
+            //        var day = result.Results[idx];
+
+            //        if (day.Transactions.Count == 0)
+            //        {
+            //            idx = idx.AddDays(1);
+            //            continue;
+            //        }
+
+            //        foreach (var kvp in day.Transactions)
+            //        {
+            //            worksheet.Cells[idxRow, 1].Value = kvp.Key;
+            //            worksheet.Cells[idxRow, 2].Value = idx;
+            //            worksheet.Cells[idxRow, 3].Value = Convert.ToDecimal(kvp.Value);
+            //            idxRow++;
+            //        }
+
+            //        idx = idx.AddDays(1);
+            //    }
+
+            //    // Set some document properties
+            //    package.Workbook.Properties.Title = "Cash Flow Forecast";
+            //    package.Workbook.Properties.Author = "jrandallsexton@gmail.com";
+            //    package.Workbook.Properties.Company = "J. Randall Sexton";
+
+            //    // save our new workbook and we are done!
+            //    package.Save();
+            //}
+
+            //Process.Start(Path.Combine(outputDir, fileName));
 
         }
 
