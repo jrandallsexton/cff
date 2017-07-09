@@ -70,7 +70,7 @@ namespace CFF.Tests.Misc
             var lowBalanceDate = DateTime.MaxValue;
 
             Console.WriteLine("***** RESULTS *****");
-            while (idx < forecast.End)
+            while (idx <= forecast.End)
             {
                 // did the month change?
                 if (currentMonth != idx.Month)
@@ -121,10 +121,10 @@ namespace CFF.Tests.Misc
 
             const decimal balanceStart = 3344.30m;
 
-            const int duration = 43;
+            const int duration = 69;
              
             // Create the forecast
-            var forecast = new Forecast("Test Case 3", EForecastType.Snapshot, new DateTime(yrStart, moStart, dyStart), duration)
+            var forecast = new Forecast("Test Case 1", EForecastType.Snapshot, new DateTime(yrStart, moStart, dyStart), duration)
             {
                 AmountBegin = balanceStart
             };
@@ -167,7 +167,10 @@ namespace CFF.Tests.Misc
             Assert.That(forecast.Id.HasValue);
 
             // stick it in the engine and process it
-            var result = this._engine.CreateForecast(this._helper, forecast);
+            var result = this._engine.CreateForecast(this._helper, forecast) as ForecastResult;
+            result.ForecastId = forecast.Id.Value;
+
+            cffSvc.SaveForecastResult(result);
 
             PrintForecastResult(yrStart, moStart, dyStart, forecast, result);
 
