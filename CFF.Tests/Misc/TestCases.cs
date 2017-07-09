@@ -171,73 +171,76 @@ namespace CFF.Tests.Misc
 
             PrintForecastResult(yrStart, moStart, dyStart, forecast, result);
 
-            //// Set the file name and get the output directory
-            //var fileName = "CFF_Report_" + DateTime.Now.ToString("yyyy-MM-dd--hh-mm-ss") + ".xlsx";
-            //var outputDir = @"C:\\";
+        }
 
-            //// Create the file using the FileInfo object
-            //var file = new FileInfo(outputDir + fileName);
+        private void ExportToExcel(int yrStart, int moStart, int dyStart, IForecast forecast, IForecastResult result)
+        {
+            // Set the file name and get the output directory
+            var fileName = "CFF_Report_" + DateTime.Now.ToString("yyyy-MM-dd--hh-mm-ss") + ".xlsx";
+            var outputDir = @"C:\\";
 
-            //// Create the package and make sure you wrap it in a using statement
-            //using (var package = new ExcelPackage(file))
-            //{
-            //    // add a new worksheet to the empty workbook
-            //    ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Cash Flow Forecast - " + DateTime.Now.ToShortDateString());
+            // Create the file using the FileInfo object
+            var file = new FileInfo(outputDir + fileName);
 
-            //    // --------- Data and styling goes here -------------- //
-            //    // Add some formatting to the worksheet
-            //    worksheet.TabColor = System.Drawing.Color.Blue;
-            //    worksheet.DefaultRowHeight = 12;
-            //    worksheet.HeaderFooter.FirstFooter.LeftAlignedText = string.Format("Generated: {0}", DateTime.Now.ToShortDateString());
-            //    worksheet.Row(1).Height = 20;
-            //    worksheet.Row(2).Height = 18;
+            // Create the package and make sure you wrap it in a using statement
+            using (var package = new ExcelPackage(file))
+            {
+                // add a new worksheet to the empty workbook
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("Cash Flow Forecast - " + DateTime.Now.ToShortDateString());
 
-            //    // Start adding the header
-            //    // First of all the first row
-            //    worksheet.Cells[1, 1].Value = "Name";
-            //    worksheet.Cells[1, 2].Value = "Date";
-            //    worksheet.Cells[1, 3].Value = "Amount";
+                // --------- Data and styling goes here -------------- //
+                // Add some formatting to the worksheet
+                worksheet.TabColor = System.Drawing.Color.Blue;
+                worksheet.DefaultRowHeight = 12;
+                worksheet.HeaderFooter.FirstFooter.LeftAlignedText = string.Format("Generated: {0}", DateTime.Now.ToShortDateString());
+                worksheet.Row(1).Height = 20;
+                worksheet.Row(2).Height = 18;
 
-            //    worksheet.Column(2).Style.Numberformat.Format = "yyyy-mm-dd";
-            //    worksheet.Column(3).Style.Numberformat.Format = "$###,###,##0.00";
+                // Start adding the header
+                // First of all the first row
+                worksheet.Cells[1, 1].Value = "Name";
+                worksheet.Cells[1, 2].Value = "Date";
+                worksheet.Cells[1, 3].Value = "Amount";
 
-            //    var idxRow = 2;
+                worksheet.Column(2).Style.Numberformat.Format = "yyyy-mm-dd";
+                worksheet.Column(3).Style.Numberformat.Format = "$###,###,##0.00";
 
-            //    idx = new DateTime(yrStart, moStart, dyStart);
+                var idxRow = 2;
 
-            //    Console.WriteLine("***** RESULTS *****");
-            //    while (idx < forecast.End)
-            //    {
-            //        var day = result.Results[idx];
+                var idx = new DateTime(yrStart, moStart, dyStart);
 
-            //        if (day.Transactions.Count == 0)
-            //        {
-            //            idx = idx.AddDays(1);
-            //            continue;
-            //        }
+                Console.WriteLine("***** RESULTS *****");
+                while (idx < forecast.End)
+                {
+                    var day = result.Results.FirstOrDefault(r => r.TransactionDate == idx);
 
-            //        foreach (var kvp in day.Transactions)
-            //        {
-            //            worksheet.Cells[idxRow, 1].Value = kvp.Key;
-            //            worksheet.Cells[idxRow, 2].Value = idx;
-            //            worksheet.Cells[idxRow, 3].Value = Convert.ToDecimal(kvp.Value);
-            //            idxRow++;
-            //        }
+                    if (day.Transactions.Count == 0)
+                    {
+                        idx = idx.AddDays(1);
+                        continue;
+                    }
 
-            //        idx = idx.AddDays(1);
-            //    }
+                    foreach (var transaction in day.Transactions)
+                    {
+                        worksheet.Cells[idxRow, 1].Value = day.TransactionDate;
+                        worksheet.Cells[idxRow, 2].Value = idx;
+                        worksheet.Cells[idxRow, 3].Value = Convert.ToDecimal(transaction.Amount);
+                        idxRow++;
+                    }
 
-            //    // Set some document properties
-            //    package.Workbook.Properties.Title = "Cash Flow Forecast";
-            //    package.Workbook.Properties.Author = "jrandallsexton@gmail.com";
-            //    package.Workbook.Properties.Company = "J. Randall Sexton";
+                    idx = idx.AddDays(1);
+                }
 
-            //    // save our new workbook and we are done!
-            //    package.Save();
-            //}
+                // Set some document properties
+                package.Workbook.Properties.Title = "Cash Flow Forecast";
+                package.Workbook.Properties.Author = "jrandallsexton@gmail.com";
+                package.Workbook.Properties.Company = "J. Randall Sexton";
 
-            //Process.Start(Path.Combine(outputDir, fileName));
+                // save our new workbook and we are done!
+                package.Save();
+            }
 
+            Process.Start(Path.Combine(outputDir, fileName));
         }
 
         /// <summary>
