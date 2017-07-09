@@ -59,13 +59,13 @@ namespace CFF.Engines
                         {
                             if (_verbose) { Console.WriteLine("\t\tIncome: {0:C}\t{1}", item.Amount, item.Name); }
                             amtBegin += item.Amount;
-                            transactions.Add(new ForecastResultItemTransaction() { Amount = item.Amount, Name = item.Name});
+                            transactions.Add(new ForecastResultItemTransaction() { Amount = item.Amount, Name = item.Name, ForecastItemId = item.Id});
                         }
                         else
                         {
                             if (_verbose) { Console.WriteLine("\t\tExpense: {0:C}\t{1}", item.Amount, item.Name); }
                             amtBegin -= item.Amount;
-                            transactions.Add(new ForecastResultItemTransaction() { Amount = -item.Amount, Name = item.Name });
+                            transactions.Add(new ForecastResultItemTransaction() { Amount = -item.Amount, Name = item.Name, ForecastItemId = item.Id });
                         }
                     }
 

@@ -53,11 +53,11 @@ namespace CFF
             {
                 if (item.LastProcessed.HasValue)
                 {
-                    workspaces.Add(new ForecastItemWorkspace(item, DateTime.MaxValue, this.GetDueDate(item.LastProcessed.Value, item.Frequency)));
+                    workspaces.Add(new ForecastItemWorkspace(item, DateTime.MaxValue, this.GetDueDate(item.LastProcessed.Value, item.Frequency)) { Id = item.Id });
                 }
                 else
                 {
-                    workspaces.Add(new ForecastItemWorkspace(item, DateTime.MaxValue, item.Begin));
+                    workspaces.Add(new ForecastItemWorkspace(item, DateTime.MaxValue, item.Begin) { Id = item.Id });
                 }
                 
                 //workspaces.Add(new ForecastItemWorkspace(item, item.Begin, item.Begin));

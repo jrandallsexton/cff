@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace CFF.Implementations
 {
     public class ForecastResultItemTransaction
@@ -11,6 +6,8 @@ namespace CFF.Implementations
         public int? Id { get; set; }
 
         public int ForecastResultItemId { get; set; }
+
+        public int ForecastItemId { get; set; }
 
         public string Name { get; set; }
 

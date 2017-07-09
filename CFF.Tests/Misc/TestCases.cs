@@ -124,7 +124,7 @@ namespace CFF.Tests.Misc
             const int duration = 43;
              
             // Create the forecast
-            var forecast = new Forecast("Test Case 2", EForecastType.Snapshot, new DateTime(yrStart, moStart, dyStart), duration)
+            var forecast = new Forecast("Test Case 3", EForecastType.Snapshot, new DateTime(yrStart, moStart, dyStart), duration)
             {
                 AmountBegin = balanceStart
             };
