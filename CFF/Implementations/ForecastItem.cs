@@ -25,9 +25,11 @@ namespace CFF
 
         public DateTime Begin { get; set; }
 
-        public DateTime End { get; set; }
+        public DateTime? End { get; set; }
 
         public DateTime? LastProcessed { get; set; }
+
+        public DateTime Due { get; set; }
 
         public Decimal Amount { get; set; }
 
@@ -38,7 +40,7 @@ namespace CFF
         public ForecastItem()
         {
             this.UId = Guid.NewGuid();
-            this.End = DateTime.MaxValue;
+            //this.End = DateTime.MaxValue;
         }
 
         public ForecastItem(string name, EForecastItemType type, EFrequency frequency, decimal amount, DateTime begin, DateTime? lastProcessed)

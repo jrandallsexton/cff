@@ -34,6 +34,87 @@ namespace CFF.Tests.Misc
         }
 
         [Test]
+        public void GetExistingForecast()
+        {
+            var cffSvc = new CffService(new CffContext("cffDb"));
+
+            var forecast = cffSvc.Get(1);
+            Assert.NotNull(forecast);
+        }
+
+        [Test]
+        public void ProcessExistingForecastModel()
+        {
+            var cffSvc = new CffService(new CffContext("cffDb"));
+
+            var forecast = cffSvc.Get(1);
+            Assert.NotNull(forecast);
+
+            // set-up
+            var now = DateTime.Now;
+
+            var yrStart = now.Year;
+            var moStart = now.Month;
+            var dyStart = now.Day;
+
+            const decimal balanceStart = 3344.30m;
+
+            const int duration = 43;
+
+            // stick it in the engine and process it
+            var result = this._engine.CreateForecast(this._helper, forecast);
+
+            PrintForecastResult(yrStart, moStart, dyStart, forecast, result);
+        }
+
+        private static void PrintForecastResult(int yrStart, int moStart, int dyStart, IForecast forecast, IForecastResult result)
+        {
+            var idx = new DateTime(yrStart, moStart, dyStart);
+            var lowBalances = new Dictionary<DateTime, decimal>();
+            var currentMonth = moStart;
+
+            var lowBalance = 999999.00m;
+            var lowBalanceDate = DateTime.MaxValue;
+
+            Console.WriteLine("***** RESULTS *****");
+            while (idx < forecast.End)
+            {
+                // did the month change?
+                if (currentMonth != idx.Month)
+                {
+                    //Console.WriteLine($"Month changed from {currentMonth} to {idx.Month}");
+                    // write the low balance for the previous month ...
+                    lowBalances.Add(lowBalanceDate, lowBalance);
+                    //Console.WriteLine($"\tAdded {lowBalanceDate} to {lowBalance}");
+                    // then reset the lowBalance for the current month
+                    lowBalance = 999999.00m;
+                    lowBalanceDate = DateTime.MaxValue;
+                    currentMonth = idx.Month;
+                }
+
+                var dailyBalance = result.Results[idx].AmountEnd;
+
+                if (dailyBalance < lowBalance)
+                {
+                    lowBalance = dailyBalance;
+                    lowBalanceDate = idx;
+                }
+
+                Console.WriteLine("\t{0:dd-MMM-yyyy}: {1:C}", idx, dailyBalance);
+                idx = idx.AddDays(1);
+            }
+            Console.WriteLine("***** END RESULTS *****");
+            Console.WriteLine("");
+            Console.WriteLine("***** LOW BALANCES *****");
+            // now i want to see the low balance for each month
+            foreach (var kvp in lowBalances)
+            {
+                Console.WriteLine("\t{0}: {1:C}", kvp.Key.ToString("dd-MMM-yyyy"), kvp.Value);
+            }
+            Console.WriteLine("***** END LOW BALANCES *****");
+        }
+
+        [Test]
         public void TestCaseOne()
         {
             var cffSvc = new CffService(new CffContext("cffDb"));
@@ -95,49 +176,7 @@ namespace CFF.Tests.Misc
             // stick it in the engine and process it
             var result = this._engine.CreateForecast(this._helper, forecast);
 
-            var idx = new DateTime(yrStart, moStart, dyStart);
-            var lowBalances = new Dictionary<DateTime, decimal>();
-            var currentMonth = moStart;
-
-            var lowBalance = 999999.00m;
-            var lowBalanceDate = DateTime.MaxValue;
-
-            Console.WriteLine("***** RESULTS *****");
-            while (idx < forecast.End)
-            {
-                // did the month change?
-                if (currentMonth != idx.Month)
-                {
-                    //Console.WriteLine($"Month changed from {currentMonth} to {idx.Month}");
-                    // write the low balance for the previous month ...
-                    lowBalances.Add(lowBalanceDate, lowBalance);
-                    //Console.WriteLine($"\tAdded {lowBalanceDate} to {lowBalance}");
-                    // then reset the lowBalance for the current month
-                    lowBalance = 999999.00m;
-                    lowBalanceDate = DateTime.MaxValue;
-                    currentMonth = idx.Month;
-                }
-
-                var dailyBalance = result.Results[idx].AmountEnd;
-
-                if (dailyBalance < lowBalance)
-                {
-                    lowBalance = dailyBalance;
-                    lowBalanceDate = idx;
-                }
-
-                Console.WriteLine("\t{0:dd-MMM-yyyy}: {1:C}", idx, dailyBalance);
-                idx = idx.AddDays(1);
-            }
-            Console.WriteLine("***** END RESULTS *****");
-            Console.WriteLine("");
-            Console.WriteLine("***** LOW BALANCES *****");
-            // now i want to see the low balance for each month
-            foreach (var kvp in lowBalances)
-            {
-                Console.WriteLine("\t{0}: {1:C}", kvp.Key.ToString("dd-MMM-yyyy"), kvp.Value);
-            }
-            Console.WriteLine("***** END LOW BALANCES *****");
+            PrintForecastResult(yrStart, moStart, dyStart, forecast, result);
 
             //// Set the file name and get the output directory
             //var fileName = "CFF_Report_" + DateTime.Now.ToString("yyyy-MM-dd--hh-mm-ss") + ".xlsx";

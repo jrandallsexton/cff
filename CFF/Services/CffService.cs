@@ -18,13 +18,24 @@ namespace CFF.Services
         public Forecast Save(Forecast forecast)
         {
             _context.Forecasts.Add(forecast);
-
-            forecast.Items.ToList().ForEach(x =>
-            {
-                _context.ForecastItems.Add(x);
-            });
-
             _context.SaveChanges();
+
+            //forecast.Items.ToList().ForEach(x =>
+            //{
+            //    x.ForecastId = forecast.Id.Value;
+            //    _context.ForecastItems.Add(x);
+            //});
+
+            //_context.SaveChanges();
+            return forecast;
+        }
+
+        public Forecast Get(int id)
+        {
+            var forecast = _context.Forecasts.FirstOrDefault(f => f.Id == id);
+            if (forecast != null)
+                forecast.Items = _context.ForecastItems.Where(x => x.ForecastId == id).OrderBy(x => x.Id).ToList();
+
             return forecast;
         }
     }

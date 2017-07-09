@@ -29,12 +29,12 @@ namespace CFF
 
         public decimal AmountBegin { get; set; }
 
-        public virtual IEnumerable<ForecastItem> Items { get { return this._items; } }
+        public virtual ICollection<ForecastItem> Items { get; set; }
 
         public Forecast()
         {
             this.Created = DateTime.Now;
-            this._items = new List<ForecastItem>();
+            this.Items = new List<ForecastItem>();
         }
 
         public Forecast(string name, EForecastType type, DateTime begin, int durationInDays) : this()
@@ -47,7 +47,7 @@ namespace CFF
 
         public void AddItem(ForecastItem item)
         {
-            this._items.Add(item);
+            this.Items.Add(item);
         }
 
     }

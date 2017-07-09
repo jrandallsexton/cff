@@ -25,7 +25,7 @@ namespace CFF.Interfaces
 
         Decimal AmountBegin { get; set; }
 
-        IEnumerable<ForecastItem> Items { get; }
+        ICollection<ForecastItem> Items { get; }
 
         void AddItem(ForecastItem item);
     }

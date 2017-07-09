@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace CFF.Enumerations
 {
     public enum EForecastType

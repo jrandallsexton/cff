@@ -1,12 +1,15 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CFF
 {
+    [NotMapped]
     public class ForecastItemWorkspace : ForecastItem
     {
 
         public DateTime LastProcessed { get; set; }
         public DateTime Due { get; set; }
+
 
         public ForecastItemWorkspace(IForecastItem forecastItem, DateTime lastProcessed, DateTime due)
         {

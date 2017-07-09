@@ -20,7 +20,7 @@ namespace CFF
 
         DateTime Begin { get; set; }
 
-        DateTime End { get; set; }
+        DateTime? End { get; set; }
 
         Decimal Amount { get; set; }
 
@@ -29,6 +29,8 @@ namespace CFF
         int DurationValue { get; set; }
 
         DateTime? LastProcessed { get; set; }
+
+        DateTime Due { get; set; }
     }
 
 }
