@@ -11,6 +11,7 @@ namespace CFF
         public ForecastItemWorkspace(IForecastItem forecastItem, DateTime lastProcessed, DateTime due)
         {
             this.Id = forecastItem.Id;
+            this.UId = forecastItem.UId;
             this.Amount = forecastItem.Amount;
             this.Begin = forecastItem.Begin;
             this.End = forecastItem.End;

@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\CffContext.cs" />
+    <Compile Include="Data\CffRepository.cs" />
     <Compile Include="Enumerations\EVariabilityType.cs" />
     <Compile Include="Implementations\Forecast.cs" />
     <Compile Include="Implementations\ForecastHelper.cs" />
@@ -70,6 +72,8 @@
     <Compile Include="Interfaces\IForecastResultItem.cs" />
     <Compile Include="Interfaces\IRevolvingAccount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CffService.cs" />
+    <Compile Include="Services\ServiceBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

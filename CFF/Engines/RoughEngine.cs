@@ -31,7 +31,7 @@ namespace CFF.Engines
             IForecastResult result = new ForecastResult(forecast.AmountBegin);
 
             // If the forecast type is indefinite, ensure that the ending date isn't greater than one year out
-            if ((forecast.Type == EForecastType.Indefinite) && (forecast.End > forecast.Begin.AddYears(1))) {
+            if ((forecast.ForecastType == EForecastType.Indefinite) && (forecast.End > forecast.Begin.AddYears(1))) {
                 forecast.End = forecast.Begin.Add(this._defaultMaxForecastPeriod); }
 
             // get a collection of every day in the period with all of the items in each day that need to be processed

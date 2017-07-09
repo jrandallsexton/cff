@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using CFF.Data;
 using CFF.Engines;
 using CFF.Enumerations;
 using CFF.Interfaces;
-
-
+using CFF.Services;
 using NUnit.Framework;
 using OfficeOpenXml;
 
@@ -36,6 +36,7 @@ namespace CFF.Tests.Misc
         [Test]
         public void TestCaseOne()
         {
+            var cffSvc = new CffService(new CffContext("cffDb"));
 
             // set-up
             var now = DateTime.Now;
@@ -44,18 +45,18 @@ namespace CFF.Tests.Misc
             var moStart = now.Month;
             var dyStart = now.Day;
 
-            const decimal balanceStart = 828.00m;
+            const decimal balanceStart = 3344.30m;
 
-            const int duration = 45;
+            const int duration = 43;
              
             // Create the forecast
-            var forecast = new Forecast("Test Case One", EForecastType.Snapshot, new DateTime(yrStart, moStart, dyStart), duration)
+            var forecast = new Forecast("Test Case 2", EForecastType.Snapshot, new DateTime(yrStart, moStart, dyStart), duration)
             {
                 AmountBegin = balanceStart
             };
 
             // add items to it
-            forecast.AddItem(new ForecastItem("Wages", EForecastItemType.Income, EFrequency.BiWeekly, 3050.00m, now, new DateTime(yrStart, moStart - 1, 23)));
+            forecast.AddItem(new ForecastItem("Wages", EForecastItemType.Income, EFrequency.BiWeekly, 3050.00m, now, new DateTime(yrStart, moStart, 7)));
             forecast.AddItem(new ForecastItem("Rental - Income", EForecastItemType.Income, EFrequency.Monthly, 2000.00m, 5));
             forecast.AddItem(new ForecastItem("Daycare Reimbursement", EForecastItemType.Income, EFrequency.BiWeekly, 150.00m, now, new DateTime(yrStart, moStart - 1, 30)));
 
@@ -71,11 +72,10 @@ namespace CFF.Tests.Misc
             forecast.AddItem(new ForecastItem("Internet", EForecastItemType.Expense, EFrequency.Monthly, 100.00m, 28));
             forecast.AddItem(new ForecastItem("Verizon", EForecastItemType.Expense, EFrequency.Monthly, 260.00m, 18));
             forecast.AddItem(new ForecastItem("Geico", EForecastItemType.Expense, EFrequency.Monthly, 85.00m, 10));
-            forecast.AddItem(new ForecastItem("Daycare", EForecastItemType.Expense, EFrequency.BiWeekly, 250.00m, now, new DateTime(yrStart, moStart - 1, 23)));
+            forecast.AddItem(new ForecastItem("Daycare", EForecastItemType.Expense, EFrequency.BiWeekly, 250.00m, now, new DateTime(yrStart, moStart, 7)));
 
-            forecast.AddItem(new ForecastItem("Rental - Lawn", EForecastItemType.Expense, EFrequency.Monthly, 180.00m, 7));
-            //forecast.AddItem(new ForecastItem("Rental - Pool", EForecastItemType.Expense, EFrequency.Monthly, 245.00m, 6));
-            forecast.AddItem(new ForecastItem("Rental - Pool", EForecastItemType.Expense, EFrequency.Monthly, 245.00m, now, new DateTime(yrStart, 10, 7), new DateTime(yrStart, 6, 7)));
+            forecast.AddItem(new ForecastItem("Rental - Lawn", EForecastItemType.Expense, EFrequency.Monthly, 180.00m, now, new DateTime(yrStart, moStart, 8)));
+            forecast.AddItem(new ForecastItem("Rental - Pool", EForecastItemType.Expense, EFrequency.Monthly, 245.00m, now, new DateTime(yrStart, 10, 7), new DateTime(yrStart, 7, 7)));
             forecast.AddItem(new ForecastItem("Rental - ADT", EForecastItemType.Expense, EFrequency.Monthly, 42.62m, 29));
 
             forecast.AddItem(new ForecastItem("Netflix", EForecastItemType.Expense, EFrequency.Monthly, 12.90m, 16));
@@ -86,8 +86,11 @@ namespace CFF.Tests.Misc
             forecast.AddItem(new ForecastItem("Barbershop", EForecastItemType.Expense, EFrequency.BiWeekly, 20.00m, now, new DateTime(yrStart, 6, 24)));
 
             forecast.AddItem(new ForecastItem("Fuel", EForecastItemType.Expense, EFrequency.Weekly, 20.00m, now, new DateTime(yrStart, moStart, 8)));
-            forecast.AddItem(new ForecastItem("Smokes", EForecastItemType.Expense, EFrequency.BiWeekly, 80.00m, now, new DateTime(yrStart, moStart, 8)));
+            forecast.AddItem(new ForecastItem("Smokes", EForecastItemType.Expense, EFrequency.BiWeekly, 80.00m, now, new DateTime(yrStart, moStart, 9)));
             forecast.AddItem(new ForecastItem("Cash", EForecastItemType.Expense, EFrequency.BiWeekly, 100.00m, now, new DateTime(yrStart, moStart, 7)));
+
+            cffSvc.Save(forecast);
+            Assert.That(forecast.Id.HasValue);
 
             // stick it in the engine and process it
             var result = this._engine.CreateForecast(this._helper, forecast);

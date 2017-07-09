@@ -61,7 +61,7 @@ namespace CFF
                 }
                 
                 //workspaces.Add(new ForecastItemWorkspace(item, item.Begin, item.Begin));
-                fcItemCache.Add(item.Id, item);
+                fcItemCache.Add(item.UId, item);
             }
 
             // 2. Prepopulate a collection representing every day within the forecast window (duration of the forecast)
@@ -95,7 +95,7 @@ namespace CFF
                             //Console.WriteLine("\t\tvalues.Count: {0}", values[idx].Count);
                         }
 
-                        values[idx].Add(fcItemCache[ws.Id]);
+                        values[idx].Add(fcItemCache[ws.UId]);
 
                         //if (_verbose) { Console.WriteLine("\t\tvalues.Count: {0}", values[idx].Count); }
 

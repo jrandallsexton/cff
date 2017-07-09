@@ -1,12 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CFF.Data;
+using CFF.Interfaces;
 
 namespace CFF.Services
 {
-    class CffService
+    public class CffService
     {
+
+        private readonly CffContext _context;
+
+        public CffService(CffContext context)
+        {
+            _context = context;
+        }
+
+        public Forecast Save(Forecast forecast)
+        {
+            _context.Forecasts.Add(forecast);
+
+            forecast.Items.ToList().ForEach(x =>
+            {
+                _context.ForecastItems.Add(x);
+            });
+
+            _context.SaveChanges();
+            return forecast;
+        }
     }
 }

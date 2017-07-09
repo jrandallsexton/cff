@@ -1,9 +1,6 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using CFF.Enumerations;
 using CFF.Interfaces;
@@ -16,15 +13,23 @@ namespace CFF
 
         private List<ForecastItem> _items = null;
 
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public DateTime Created { get; set; }
-        public EForecastType Type { get; set; }
-        public DateTime Begin { get; set; }
-        public DateTime End { get; set; }
-        public Decimal AmountBegin { get; set; }
+        public int? Id { get; set; }
 
-        public IEnumerable<ForecastItem> Items { get { return this._items; } }
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public DateTime Created { get; set; }
+
+        public EForecastType ForecastType { get; set; }
+
+        public DateTime Begin { get; set; }
+
+        public DateTime End { get; set; }
+
+        public decimal AmountBegin { get; set; }
+
+        public virtual IEnumerable<ForecastItem> Items { get { return this._items; } }
 
         public Forecast()
         {
@@ -35,9 +40,9 @@ namespace CFF
         public Forecast(string name, EForecastType type, DateTime begin, int durationInDays) : this()
         {
             this.Name = name;
-            this.Type = type;
+            this.ForecastType = type;
             this.Begin = begin;
-            if (this.Type == EForecastType.Snapshot) { this.End = this.Begin.AddDays(durationInDays); }
+            if (this.ForecastType == EForecastType.Snapshot) { this.End = this.Begin.AddDays(durationInDays); }
         }
 
         public void AddItem(ForecastItem item)
