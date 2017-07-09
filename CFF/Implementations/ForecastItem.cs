@@ -31,7 +31,7 @@ namespace CFF
 
         public DateTime Due { get; set; }
 
-        public Decimal Amount { get; set; }
+        public decimal Amount { get; set; }
 
         public EDurationType DurationType { get; set; }
 

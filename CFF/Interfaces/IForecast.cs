@@ -23,7 +23,7 @@ namespace CFF.Interfaces
 
         DateTime End { get; set; }
 
-        Decimal AmountBegin { get; set; }
+        decimal AmountBegin { get; set; }
 
         ICollection<ForecastItem> Items { get; }
 

@@ -11,8 +11,6 @@ namespace CFF
     public class Forecast : IForecast 
     {
 
-        private List<ForecastItem> _items = null;
-
         public int? Id { get; set; }
 
         public string Name { get; set; }

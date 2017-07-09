@@ -19,15 +19,14 @@ namespace CFF.Services
         {
             _context.Forecasts.Add(forecast);
             _context.SaveChanges();
-
-            //forecast.Items.ToList().ForEach(x =>
-            //{
-            //    x.ForecastId = forecast.Id.Value;
-            //    _context.ForecastItems.Add(x);
-            //});
-
-            //_context.SaveChanges();
             return forecast;
+        }
+
+        public ForecastResult SaveForecastResult(ForecastResult result)
+        {
+            _context.ForecastResults.Add(result);
+            _context.SaveChanges();
+            return result;
         }
 
         public Forecast Get(int id)

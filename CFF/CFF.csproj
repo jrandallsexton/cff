@@ -63,6 +63,7 @@
     <Compile Include="Enumerations\EForecastItemType.cs" />
     <Compile Include="Enumerations\EForecastType.cs" />
     <Compile Include="Enumerations\EFrequency.cs" />
+    <Compile Include="Implementations\ForecastResultItemTransaction.cs" />
     <Compile Include="Implementations\ForecastRevAccount.cs" />
     <Compile Include="Interfaces\IForecast.cs" />
     <Compile Include="Interfaces\IForecastHelper.cs" />

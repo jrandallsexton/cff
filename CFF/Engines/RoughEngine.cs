@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using CFF.Enumerations;
+using CFF.Implementations;
 using CFF.Interfaces;
 
 namespace CFF.Engines
@@ -28,7 +29,7 @@ namespace CFF.Engines
 
             this._helper = helper;
 
-            IForecastResult result = new ForecastResult(forecast.AmountBegin);
+            var result = new ForecastResult(forecast.AmountBegin);
 
             // If the forecast type is indefinite, ensure that the ending date isn't greater than one year out
             if ((forecast.ForecastType == EForecastType.Indefinite) && (forecast.End > forecast.Begin.AddYears(1))) {
@@ -43,7 +44,7 @@ namespace CFF.Engines
             while (idx <= forecast.End)
             {
 
-                var transactions = new Dictionary<string, decimal>();
+                var transactions = new List<ForecastResultItemTransaction>();
 
                 // process items that need processing
                 if ((values.ContainsKey(idx)) && (values[idx].Count > 0))
@@ -58,13 +59,13 @@ namespace CFF.Engines
                         {
                             if (_verbose) { Console.WriteLine("\t\tIncome: {0:C}\t{1}", item.Amount, item.Name); }
                             amtBegin += item.Amount;
-                            transactions.Add(item.Name, item.Amount);
+                            transactions.Add(new ForecastResultItemTransaction() { Amount = item.Amount, Name = item.Name});
                         }
                         else
                         {
                             if (_verbose) { Console.WriteLine("\t\tExpense: {0:C}\t{1}", item.Amount, item.Name); }
                             amtBegin -= item.Amount;
-                            transactions.Add(item.Name, -item.Amount);
+                            transactions.Add(new ForecastResultItemTransaction() { Amount = -item.Amount, Name = item.Name });
                         }
                     }
 
@@ -75,7 +76,7 @@ namespace CFF.Engines
                 }
 
                 // store the daily result
-                result.Results.Add(idx, new ForecastResultItem(amtBegin, amtBegin) { Transactions = transactions });
+                result.Results.Add(new ForecastResultItem(amtBegin, amtBegin) { Transactions = transactions, TransactionDate = idx});
 
                 //amtBegin = amtEnd;
 

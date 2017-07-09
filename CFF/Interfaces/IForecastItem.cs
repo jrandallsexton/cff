@@ -22,7 +22,7 @@ namespace CFF
 
         DateTime? End { get; set; }
 
-        Decimal Amount { get; set; }
+        decimal Amount { get; set; }
 
         EDurationType DurationType { get; set; }
 

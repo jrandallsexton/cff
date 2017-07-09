@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using CFF.Data;
 using CFF.Engines;
 using CFF.Enumerations;
@@ -50,21 +51,13 @@ namespace CFF.Tests.Misc
             var forecast = cffSvc.Get(1);
             Assert.NotNull(forecast);
 
-            // set-up
-            var now = DateTime.Now;
-
-            var yrStart = now.Year;
-            var moStart = now.Month;
-            var dyStart = now.Day;
-
-            const decimal balanceStart = 3344.30m;
-
-            const int duration = 43;
-
             // stick it in the engine and process it
-            var result = this._engine.CreateForecast(this._helper, forecast);
+            var result = this._engine.CreateForecast(this._helper, forecast) as ForecastResult;
+            result.ForecastId = forecast.Id.Value;
 
-            PrintForecastResult(yrStart, moStart, dyStart, forecast, result);
+            cffSvc.SaveForecastResult(result);
+
+            PrintForecastResult(forecast.Begin.Year, forecast.Begin.Month, forecast.Begin.Day, forecast, result);
         }
 
         private static void PrintForecastResult(int yrStart, int moStart, int dyStart, IForecast forecast, IForecastResult result)
@@ -92,7 +85,7 @@ namespace CFF.Tests.Misc
                     currentMonth = idx.Month;
                 }
 
-                var dailyBalance = result.Results[idx].AmountEnd;
+                var dailyBalance = result.Results.First(r => r.TransactionDate == idx).AmountEnd;
 
                 if (dailyBalance < lowBalance)
                 {
@@ -282,7 +275,7 @@ namespace CFF.Tests.Misc
 
             while (idx < forecast.End)
             {
-                Console.WriteLine("{0}: {1:C}", idx.ToString("dd-MMM-yyyy"), result.Results[idx].AmountEnd);
+                Console.WriteLine("{0}: {1:C}", idx.ToString("dd-MMM-yyyy"), result.Results.First(r => r.TransactionDate == idx).AmountEnd);
                 idx = idx.AddDays(1);
             }
 
