@@ -207,11 +207,13 @@ namespace CFF.Tests
         [Test]
         public void ProcessRevolvingAcct()
         {
-            ForecastRevAccount rev = new ForecastRevAccount();
-            rev.InitialAmount = 5000.00m;
-            rev.InterestRate = 00.189m;
-            rev.PaymentPercent = 0.04m;
-            rev.MinimumPayment = 15.00m;
+            var rev = new ForecastRevAccount
+            {
+                InitialAmount = 5000.00m,
+                InterestRate = 00.189m,
+                PaymentPercent = 0.04m,
+                MinimumPayment = 15.00m
+            };
 
             this._engine.ProcessRevolving(rev);
 

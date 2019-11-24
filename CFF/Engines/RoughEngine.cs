@@ -11,7 +11,7 @@ namespace CFF.Engines
     public class RoughEngine : IForecastEngine 
     {
 
-        private bool _verbose = false;
+        private bool _verbose = true;
 
         private readonly TimeSpan _defaultMaxForecastPeriod = new TimeSpan(365, 0, 0, 0);
         private IForecastHelper _helper = null;
@@ -23,11 +23,9 @@ namespace CFF.Engines
 
         public IForecastResult CreateForecast(IForecastHelper helper, IForecast forecast)
         {
+            if (forecast == null) { throw new ArgumentNullException(nameof(forecast)); }
 
-            if (helper == null) { throw new ArgumentNullException("helper"); }
-            if (forecast == null) { throw new ArgumentNullException("forecast"); }
-
-            this._helper = helper;
+            this._helper = helper ?? throw new ArgumentNullException(nameof(helper));
 
             var result = new ForecastResult(forecast.AmountBegin);
 
@@ -50,7 +48,7 @@ namespace CFF.Engines
                 if ((values.ContainsKey(idx)) && (values[idx].Count > 0))
                 {
 
-                    if (_verbose) { Console.WriteLine("{0}: {1} transactions found.", idx.ToString("dd-MMM-yyyy"), values[idx].Count); }
+                    if (_verbose) { Console.WriteLine("{0:dd-MMM-yyyy}: {1} transactions found.", idx, values[idx].Count); }
 
                     // we found items that needed to be processed on the current day
                     foreach (var item in values[idx])
@@ -72,7 +70,7 @@ namespace CFF.Engines
                 }
                 else
                 {
-                    if (_verbose) { Console.WriteLine("{0}: 0 transactions found.", idx.ToString("dd-MMM-yyyy")); }
+                    if (_verbose) { Console.WriteLine("{0:dd-MMM-yyyy}: 0 transactions found.", idx); }
                 }
 
                 // store the daily result

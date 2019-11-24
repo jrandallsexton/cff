@@ -59,12 +59,12 @@ namespace CFF
                 {
                     workspaces.Add(new ForecastItemWorkspace(item, DateTime.MaxValue, item.Begin) { Id = item.Id });
                 }
-                
+
                 //workspaces.Add(new ForecastItemWorkspace(item, item.Begin, item.Begin));
                 fcItemCache.Add(item.UId, item);
             }
 
-            // 2. Prepopulate a collection representing every day within the forecast window (duration of the forecast)
+            // 2. Pre-populate a collection representing every day within the forecast window (duration of the forecast)
             var values = new Dictionary<DateTime, IList<IForecastItem>>();
 
             for (var idxx = forecast.Begin; idxx <= forecast.End; idxx = idxx.AddDays(1d))
@@ -72,7 +72,7 @@ namespace CFF
                 values.Add(idxx, new List<IForecastItem>());
             }
 
-            // 3. Iterate through each workspace, determine each day it needs to be proccessed and add it to the return collection
+            // 3. Iterate through each workspace, determine each day it needs to be processed and add it to the return collection
             for (var i = 0; i < workspaces.Count; i++)
             {
 
@@ -92,12 +92,12 @@ namespace CFF
                         if (_verbose)
                         {
                             Console.WriteLine("\t{0}: Due", idx.ToString("dd-MMM"));
-                            //Console.WriteLine("\t\tvalues.Count: {0}", values[idx].Count);
+                            Console.WriteLine("\t\tvalues.Count: {0}", values[idx].Count);
                         }
 
                         values[idx].Add(fcItemCache[ws.UId]);
 
-                        //if (_verbose) { Console.WriteLine("\t\tvalues.Count: {0}", values[idx].Count); }
+                        if (_verbose) { Console.WriteLine("\t\tvalues.Count: {0}", values[idx].Count); }
 
                         ws.LastProcessed = idx;
 
@@ -107,10 +107,10 @@ namespace CFF
                         if (_verbose) { Console.WriteLine("\t\tNext Due: {0}", ws.Due.ToString("dd-MMM")); }
 
                     }
-                    //else
-                    //{
-                    //    if (_verbose) { Console.WriteLine("\t{0}: Not Due", idx.ToString("dd-MMM")); }
-                    //}
+                    else
+                    {
+                        if (_verbose) { Console.WriteLine("\t{0}: Not Due", idx.ToString("dd-MMM")); }
+                    }
 
                     idx = idx.AddDays(1d);
 

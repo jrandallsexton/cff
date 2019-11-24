@@ -4,12 +4,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+
 using CFF.Data;
 using CFF.Engines;
 using CFF.Enumerations;
 using CFF.Interfaces;
 using CFF.Services;
+
 using NUnit.Framework;
+
 using OfficeOpenXml;
 
 namespace CFF.Tests.Misc
@@ -23,21 +26,23 @@ namespace CFF.Tests.Misc
     public class TestCases
     {
 
-        private IForecastHelper _helper = null;
-        private IForecastEngine _engine = null;
+        private IForecastHelper _helper;
+        private IForecastEngine _engine;
+
+        private const string DbConnectionStringName = "cffdb";
 
         [TestFixtureSetUp]
         public void CreateHelper()
         {
-            this._helper = new ForecastHelper();
-            this._engine = new RoughEngine();
-            this._engine.IsVerbose(true);
+            _helper = new ForecastHelper(true);
+            _engine = new RoughEngine();
+            _engine.IsVerbose(true);
         }
 
         [Test]
         public void GetExistingForecast()
         {
-            var cffSvc = new CffService(new CffContext("cffDb"));
+            var cffSvc = new CffService(new CffContext(DbConnectionStringName));
 
             var forecast = cffSvc.Get(1);
             Assert.NotNull(forecast);
@@ -46,7 +51,7 @@ namespace CFF.Tests.Misc
         [Test]
         public void ProcessExistingForecastModel()
         {
-            var cffSvc = new CffService(new CffContext("cffDb"));
+            var cffSvc = new CffService(new CffContext(DbConnectionStringName));
 
             var forecast = cffSvc.Get(1);
             Assert.NotNull(forecast);
@@ -58,6 +63,68 @@ namespace CFF.Tests.Misc
             cffSvc.SaveForecastResult(result);
 
             PrintForecastResult(forecast.Begin.Year, forecast.Begin.Month, forecast.Begin.Day, forecast, result);
+        }
+
+        [Test]
+        public void TestCaseOne()
+        {
+            var cffSvc = new CffService(new CffContext(DbConnectionStringName));
+
+            // set-up
+            var now = DateTime.Now;
+
+            var yrStart = now.Year;
+            var moStart = now.Month;
+            var dyStart = now.Day;
+
+            const decimal balanceStart = 220.30m;
+
+            const int duration = 90;
+             
+            // Create the forecast
+            var forecast = new Forecast("Test Case 1", EForecastType.Snapshot, new DateTime(yrStart, moStart, dyStart), duration)
+            {
+                AmountBegin = balanceStart
+            };
+
+            // add items to it
+            forecast.AddItem(new ForecastItem("Wages", EForecastItemType.Income, EFrequency.BiWeekly, 3220.00m, now, new DateTime(yrStart, 11, 22)));
+            forecast.AddItem(new ForecastItem("Rental - Income", EForecastItemType.Income, EFrequency.Monthly, 1800.00m, 5));
+            forecast.AddItem(new ForecastItem("Daycare Reimbursement", EForecastItemType.Income, EFrequency.BiWeekly, 190.00m, now, new DateTime(yrStart, moStart, 12)));
+
+            forecast.AddItem(new ForecastItem("Rent", EForecastItemType.Expense, EFrequency.BiWeekly, 1000.00m, now, new DateTime(yrStart, 11, 22)));
+            forecast.AddItem(new ForecastItem("Trustee", EForecastItemType.Expense, EFrequency.Monthly, 3482.00m, now, new DateTime(yrStart, 11, 22)));
+
+            forecast.AddItem(new ForecastItem("Internet", EForecastItemType.Expense, EFrequency.Monthly, 100.00m, 10));
+            forecast.AddItem(new ForecastItem("Verizon", EForecastItemType.Expense, EFrequency.Monthly, 260.00m, 18));
+            forecast.AddItem(new ForecastItem("Auto Insurance", EForecastItemType.Expense, EFrequency.Monthly, 95.00m, 10));
+            forecast.AddItem(new ForecastItem("Daycare", EForecastItemType.Expense, EFrequency.BiWeekly, 286.00m, now, new DateTime(yrStart, moStart, 15)));
+
+            forecast.AddItem(new ForecastItem("Rental - Lawn", EForecastItemType.Expense, EFrequency.Monthly, 180.00m, now, new DateTime(yrStart, moStart, 1)));
+
+            forecast.AddItem(new ForecastItem("Netflix", EForecastItemType.Expense, EFrequency.Monthly, 15.90m, 16));
+            forecast.AddItem(new ForecastItem("Dropbox", EForecastItemType.Expense, EFrequency.Monthly, 9.99m, 5));
+            forecast.AddItem(new ForecastItem("Apple Storage", EForecastItemType.Expense, EFrequency.Monthly, 5.00m, 7));
+            forecast.AddItem(new ForecastItem("Google Drive", EForecastItemType.Expense, EFrequency.Monthly, 1.99m, 5));
+
+            forecast.AddItem(new ForecastItem("Barbershop", EForecastItemType.Expense, EFrequency.BiWeekly, 20.00m, now, new DateTime(yrStart, moStart, 17)));
+
+            forecast.AddItem(new ForecastItem("Fuel", EForecastItemType.Expense, EFrequency.Weekly, 20.00m, now, new DateTime(yrStart, moStart, 23)));
+            forecast.AddItem(new ForecastItem("Smokes", EForecastItemType.Expense, EFrequency.BiWeekly, 80.00m, now, new DateTime(yrStart, moStart, 25)));
+            forecast.AddItem(new ForecastItem("Cash", EForecastItemType.Expense, EFrequency.BiWeekly, 100.00m, now, new DateTime(yrStart, moStart, 25)));
+
+            cffSvc.Save(forecast);
+            Assert.That(forecast.Id.HasValue);
+
+            // stick it in the engine and process it
+            if (!(_engine.CreateForecast(_helper, forecast) is ForecastResult result))
+                return;
+
+            result.ForecastId = forecast.Id.Value;
+
+            cffSvc.SaveForecastResult(result);
+
+            PrintForecastResult(yrStart, moStart, dyStart, forecast, result);
         }
 
         private static void PrintForecastResult(int yrStart, int moStart, int dyStart, IForecast forecast, IForecastResult result)
@@ -75,10 +142,10 @@ namespace CFF.Tests.Misc
                 // did the month change?
                 if (currentMonth != idx.Month)
                 {
-                    //Console.WriteLine($"Month changed from {currentMonth} to {idx.Month}");
+                    Console.WriteLine($"Month changed from {currentMonth} to {idx.Month}");
                     // write the low balance for the previous month ...
                     lowBalances.Add(lowBalanceDate, lowBalance);
-                    //Console.WriteLine($"\tAdded {lowBalanceDate} to {lowBalance}");
+                    Console.WriteLine($"\tAdded {lowBalanceDate} to {lowBalance}");
                     // then reset the lowBalance for the current month
                     lowBalance = 999999.00m;
                     lowBalanceDate = DateTime.MaxValue;
@@ -102,78 +169,9 @@ namespace CFF.Tests.Misc
             // now i want to see the low balance for each month
             foreach (var kvp in lowBalances)
             {
-                Console.WriteLine("\t{0}: {1:C}", kvp.Key.ToString("dd-MMM-yyyy"), kvp.Value);
+                Console.WriteLine("\t{0:dd-MMM-yyyy}: {1:C}", kvp.Key, kvp.Value);
             }
             Console.WriteLine("***** END LOW BALANCES *****");
-        }
-
-        [Test]
-        public void TestCaseOne()
-        {
-            var cffSvc = new CffService(new CffContext("cffDb"));
-
-            // set-up
-            var now = DateTime.Now;
-
-            var yrStart = now.Year;
-            var moStart = now.Month;
-            var dyStart = now.Day;
-
-            const decimal balanceStart = 3344.30m;
-
-            const int duration = 69;
-             
-            // Create the forecast
-            var forecast = new Forecast("Test Case 1", EForecastType.Snapshot, new DateTime(yrStart, moStart, dyStart), duration)
-            {
-                AmountBegin = balanceStart
-            };
-
-            // add items to it
-            forecast.AddItem(new ForecastItem("Wages", EForecastItemType.Income, EFrequency.BiWeekly, 3050.00m, now, new DateTime(yrStart, moStart, 7)));
-            forecast.AddItem(new ForecastItem("Rental - Income", EForecastItemType.Income, EFrequency.Monthly, 2000.00m, 5));
-            forecast.AddItem(new ForecastItem("Daycare Reimbursement", EForecastItemType.Income, EFrequency.BiWeekly, 150.00m, now, new DateTime(yrStart, moStart - 1, 30)));
-
-            forecast.AddItem(new ForecastItem("Rent", EForecastItemType.Expense, EFrequency.Monthly, 1825.00m, 4));
-            forecast.AddItem(new ForecastItem("Trustee", EForecastItemType.Expense, EFrequency.Monthly, 3370.00m, new DateTime(yrStart, 8, 17), null));
-
-            // The following 3 items will drop off by 31 July
-            forecast.AddItem(new ForecastItem("WF - Jun", EForecastItemType.Expense, EFrequency.Intermittent, 1555.00m, 10));
-            forecast.AddItem(new ForecastItem("WF - Jul", EForecastItemType.Expense, EFrequency.Intermittent, 1555.00m, 24));
-
-            forecast.AddItem(new ForecastItem("Electric", EForecastItemType.Expense, EFrequency.Monthly, 300.00m, 6));
-            forecast.AddItem(new ForecastItem("Water", EForecastItemType.Expense, EFrequency.Monthly, 200.00m, 22));
-            forecast.AddItem(new ForecastItem("Internet", EForecastItemType.Expense, EFrequency.Monthly, 100.00m, 28));
-            forecast.AddItem(new ForecastItem("Verizon", EForecastItemType.Expense, EFrequency.Monthly, 260.00m, 18));
-            forecast.AddItem(new ForecastItem("Geico", EForecastItemType.Expense, EFrequency.Monthly, 85.00m, 10));
-            forecast.AddItem(new ForecastItem("Daycare", EForecastItemType.Expense, EFrequency.BiWeekly, 250.00m, now, new DateTime(yrStart, moStart, 7)));
-
-            forecast.AddItem(new ForecastItem("Rental - Lawn", EForecastItemType.Expense, EFrequency.Monthly, 180.00m, now, new DateTime(yrStart, moStart, 8)));
-            forecast.AddItem(new ForecastItem("Rental - Pool", EForecastItemType.Expense, EFrequency.Monthly, 245.00m, now, new DateTime(yrStart, 10, 7), new DateTime(yrStart, 7, 7)));
-            forecast.AddItem(new ForecastItem("Rental - ADT", EForecastItemType.Expense, EFrequency.Monthly, 42.62m, 29));
-
-            forecast.AddItem(new ForecastItem("Netflix", EForecastItemType.Expense, EFrequency.Monthly, 12.90m, 16));
-            forecast.AddItem(new ForecastItem("Dropbox", EForecastItemType.Expense, EFrequency.Monthly, 5.00m, 5));
-            forecast.AddItem(new ForecastItem("Apple Storage", EForecastItemType.Expense, EFrequency.Monthly, 5.00m, 7));
-            forecast.AddItem(new ForecastItem("Google Drive", EForecastItemType.Expense, EFrequency.Monthly, 1.99m, 5));
-
-            forecast.AddItem(new ForecastItem("Barbershop", EForecastItemType.Expense, EFrequency.BiWeekly, 20.00m, now, new DateTime(yrStart, 6, 24)));
-
-            forecast.AddItem(new ForecastItem("Fuel", EForecastItemType.Expense, EFrequency.Weekly, 20.00m, now, new DateTime(yrStart, moStart, 8)));
-            forecast.AddItem(new ForecastItem("Smokes", EForecastItemType.Expense, EFrequency.BiWeekly, 80.00m, now, new DateTime(yrStart, moStart, 9)));
-            forecast.AddItem(new ForecastItem("Cash", EForecastItemType.Expense, EFrequency.BiWeekly, 100.00m, now, new DateTime(yrStart, moStart, 7)));
-
-            cffSvc.Save(forecast);
-            Assert.That(forecast.Id.HasValue);
-
-            // stick it in the engine and process it
-            var result = this._engine.CreateForecast(this._helper, forecast) as ForecastResult;
-            result.ForecastId = forecast.Id.Value;
-
-            cffSvc.SaveForecastResult(result);
-
-            PrintForecastResult(yrStart, moStart, dyStart, forecast, result);
-
         }
 
         private void ExportToExcel(int yrStart, int moStart, int dyStart, IForecast forecast, IForecastResult result)
@@ -291,10 +289,9 @@ namespace CFF.Tests.Misc
         [TestFixtureTearDown]
         public void TearDown()
         {
-            this._helper = null;
-            this._engine = null;
+            _helper = null;
+            _engine = null;
         }
 
     }
-
 }
