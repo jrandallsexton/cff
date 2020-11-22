@@ -1,23 +1,10 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using Cff.Core.Engines;
+using Cff.Core.Implementations;
+using Cff.Core.Interfaces;
+using Cff.Core.Tests.Factories;
 using NUnit.Framework;
 
-using CFF;
-using CFF.Enumerations;
-using CFF.Interfaces;
-
-using CFF.Engines;
-
-using CFF.Tests.Factories;
-using CFF.Tests.Interfaces;
-using CFF.Tests.Mocks;
-
-namespace CFF.Tests
+namespace Cff.Core.Tests.Engines
 {
 
     [TestFixture]

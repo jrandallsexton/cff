@@ -1,20 +1,13 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using CFF;
-using CFF.Enumerations;
-using CFF.Interfaces;
-
-using CFF.Tests.Interfaces;
-using CFF.Tests.Factories;
+﻿using Cff.Core.Enumerations;
+using Cff.Core.Implementations;
+using Cff.Core.Interfaces;
+using Cff.Core.Tests.Factories;
 
 using NUnit.Framework;
 
-namespace CFF.Tests
+using System;
+
+namespace Cff.Core.Tests.Misc
 {
 
     [TestFixture]
@@ -80,9 +73,9 @@ namespace CFF.Tests
         public void ForecastHelper_Determines_All_Due_Dates()
         {
             // Create the forecast
-            IForecast forecast = this._factory.Create();
+            var forecast = this._factory.Create();
 
-            IDictionary<DateTime, IList<IForecastItem>> values = this._helper.GenerateDueDates(forecast);
+            var values = this._helper.GenerateDueDates(forecast);
 
             Assert.AreEqual(0, values[new DateTime(2015, 1, 1)].Count);
             Assert.AreEqual(0, values[new DateTime(2015, 1, 2)].Count);

@@ -1,22 +1,21 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Text;
+using Cff.Core.Enumerations;
+using Cff.Core.Interfaces;
+using Cff.Core.Models;
 
-using CFF.Enumerations;
-using CFF.Interfaces;
-
-namespace CFF
+namespace Cff.Core.Implementations
 {
-
     public class ForecastHelper : IForecastHelper
     {
 
         private readonly bool _verbose = true;
-        private readonly bool _logInfo = false;
+        private readonly bool _logInfo = true;
 
         public ForecastHelper()
         {
-            
+
         }
 
         public ForecastHelper(bool verbose, bool logInfo)
@@ -42,16 +41,16 @@ namespace CFF
             }
         }
 
-        public IDictionary<DateTime, IList<IForecastItem>> GenerateDueDates(IForecast forecast)
+        public IDictionary<DateTime, IList<ForecastItem>> GenerateDueDates(Forecast forecast)
         {
 
             // 1A. Create workspace holders for each forecast item; will be used to determine what days each item will affect the forecast
             var workspaces = new List<ForecastItemWorkspace>();
 
             // 1B. We will also cache the forecast items so that we can retrieve them by the key
-            var fcItemCache = new Dictionary<Guid, IForecastItem>();
+            var fcItemCache = new Dictionary<Guid, ForecastItem>();
 
-            foreach (IForecastItem item in forecast.Items)
+            foreach (var item in forecast.Items)
             {
                 if (item.LastProcessed.HasValue)
                 {
@@ -67,11 +66,11 @@ namespace CFF
             }
 
             // 2. Pre-populate a collection representing every day within the forecast window (duration of the forecast)
-            var values = new Dictionary<DateTime, IList<IForecastItem>>();
+            var values = new Dictionary<DateTime, IList<ForecastItem>>();
 
             for (var idxx = forecast.Begin; idxx <= forecast.End; idxx = idxx.AddDays(1d))
             {
-                values.Add(idxx, new List<IForecastItem>());
+                values.Add(idxx, new List<ForecastItem>());
             }
 
             // 3. Iterate through each workspace, determine each day it needs to be processed and add it to the return collection
